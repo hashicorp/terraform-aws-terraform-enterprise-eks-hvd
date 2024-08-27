@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 locals {
   helm_overrides_values = {
     # IAM role for TFE Kubernetes service account (IRSA)

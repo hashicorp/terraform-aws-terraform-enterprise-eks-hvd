@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 resource "aws_security_group" "tfe_lb_allow" {
   count = var.create_tfe_lb_security_group ? 1 : 0
 
