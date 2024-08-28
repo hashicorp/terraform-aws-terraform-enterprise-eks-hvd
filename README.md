@@ -80,9 +80,9 @@ One of the following logging destinations:
 
 1. Create/configure/validate the applicable [prerequisites](#prerequisites).
 
-2. Nested within the [examples](./examples/) directory are subdirectories that contain ready-made Terraform configurations of example scenarios for how to call and deploy this module. To get started, choose an example scenario. If you are starting without an existing EKS cluster, then we recommend starting with the [new-eks-cluster](examples/new-eks-cluster) example.
+2. Nested within the [examples](./examples/) directory are subdirectories containing ready-made Terraform configurations for example scenarios on how to call and deploy this module. To get started, choose the example scenario that most closely matches your requirements. You can customize your deployment later by adding additional module [inputs](#inputs) as you see fit (see the [Deployment-Customizations](./docs/deployment-customizations.md) doc for more details).
 
-3. Copy all of the Terraform files from your example scenario of choice into a new destination directory to create your Terraform configuration that will manage your TFE deployment. If you are not sure where to create this new directory, it is common for users to create an `environments/` directory at the root of this repo (once you have cloned it down locally), and then a subdirectory for each TFE instance deployment, like so:
+3. Copy all of the Terraform files from your example scenario of choice into a new destination directory to create your Terraform configuration that will manage your TFE deployment. This is a common directory structure for managing multiple TFE deployments:
    
     ```
     .
@@ -100,7 +100,7 @@ One of the following logging destinations:
             ├── terraform.tfvars
             └── variables.tf
     ```
-    >📝 Note: in this example, the user will have two separate TFE deployments; one for their `sandbox` environment, and one for their `production` environment. This is recommended, but not required.
+    >📝 Note: In this example, the user will have two separate TFE deployments; one for their `sandbox` environment, and one for their `production` environment. This is recommended, but not required.
 
 4. (Optional) Uncomment and update the [S3 remote state backend](https://developer.hashicorp.com/terraform/language/settings/backends/s3) configuration provided in the `backend.tf` file with your own custom values. While this step is highly recommended, it is technically not required to use a remote backend config for your TFE deployment (if you are in a sandbox environment, for example).
 
@@ -114,7 +114,7 @@ One of the following logging destinations:
 
 7. Authenticate to your EKS cluster: 
    
-   ```sh
+   ```shell
    aws eks --region <aws-region> update-kubeconfig --name <eks-cluster-name>
    ```
 
@@ -123,17 +123,20 @@ One of the following logging destinations:
 8. AWS recommends installing the AWS load balancer controller for EKS. If it is not already installed in your EKS cluster, install the AWS load balancer controller within the `kube-system` namespace via the Helm chart:
    
    Add the AWS `eks-charts` Helm chart repository:
-   ```sh
+   
+   ```shell
    helm repo add eks https://aws.github.io/eks-charts
    ```
    
    Update your local repo to make sure that you have the most recent charts:
-   ```sh
+   
+   ```shell
    helm repo update eks
    ```
    
    Install the AWS load balancer controller:
-   ```sh
+   
+   ```shell
    helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
     --namespace kube-system \
     --set clusterName=<eks-cluster-name> \
@@ -162,7 +165,7 @@ One of the following logging destinations:
 
 13. Add the HashiCorp Helm chart repository:
    
-    ```sh
+    ```shell
     helm repo add hashicorp https://helm.releases.hashicorp.com
     ```
 
@@ -170,36 +173,41 @@ One of the following logging destinations:
 
 14. Install the TFE application via `helm`:
    
-    ```sh
+    ```shell
     helm install terraform-enterprise hashicorp/terraform-enterprise --namespace <TFE_NAMESPACE> --values <TFE_OVERRIDES_FILE>
     ```
 
 15. Verify the TFE pod(s) are starting successfully:
     
     View the events within the namespace:
-    ```sh
+    
+    ```shell
     kubectl get events --namespace <TFE_NAMESPACE>
     ```
     
     View the pods within the namespace:
-    ```sh
+    
+    ```shell
     kubectl get pods --namespace <TFE_NAMESPACE>
     ```
 
     View the logs from the pod:
-    ```sh
+    
+    ```shell
     kubectl logs <TFE_POD_NAME> --namespace <TFE_NAMESPACE> -f
     ```
 
 16. Create a DNS record for your TFE FQDN. The DNS record should resolve to your TFE load balancer, depending on how the load balancer was configured during your TFE deployment:
     
     - If you configured a Kubernetes service of type `LoadBalancer` (what the module-generated Helm overrides defaults to), the DNS record should resolve to the DNS name of your AWS network load balancer (NLB).
-      ```sh
+      
+      ```shell
       kubectl get services --namespace <TFE_NAMESPACE>
       ```
     
     - If you configured a custom Kubernetes ingress (meaning you customized your Helm overrides during step 11), the DNS record should resolve to the IP address of your ingress controller load balancer.
-      ```sh
+      
+      ```shell
       kubectl get ingress <INGRESS_NAME> --namespace <INGRESS_NAMESPACE>
       ```
     
@@ -207,7 +215,7 @@ One of the following logging destinations:
   
 17. Verify the TFE application is ready:
       
-    ```sh
+    ```shell
     curl https://<TFE_FQDN>/_health_check
     ```
 
