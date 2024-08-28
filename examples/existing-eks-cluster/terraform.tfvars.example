@@ -1,0 +1,28 @@
+# --- Common --- #
+region               = "<aws-region>"
+friendly_name_prefix = "<sandbox>"
+common_tags = {
+  App   = "TFE"
+  Env   = "<sandbox>"
+  Owner = "<YourName>"
+}
+
+# ---TFE configuration settings --- #
+tfe_fqdn                   = "<tfe.aws.example.com>"
+create_helm_overrides_file = true
+
+# --- Networking --- #
+vpc_id                     = "<my-vpc-id>"
+eks_subnet_ids             = ["<my-eks-subnet-id-a>", "<my-eks-subnet-id-b>", "<my-eks-subnet-id-c>"]
+rds_subnet_ids             = ["<my-rds-subnet-id-a>", "<my-rds-subnet-id-b>", "<my-rds-subnet-id-c>"]
+redis_subnet_ids           = ["<my-redis-subnet-id-a>", "<my-redis-subnet-id-b>", "<my-redis-subnet-id-c>"]
+cidr_allow_ingress_tfe_443 = ["0.0.0.0/0"] # CIDR ranges of your TFE users/clients and VCS
+
+# --- Database --- #
+tfe_database_password_secret_arn = "<my-database-password-secret-arn>"
+rds_skip_final_snapshot          = <false>
+sg_allow_ingress_to_rds          = "<tfe-eks-nodegroup-sg-id>"
+
+# --- Redis --- #
+tfe_redis_password_secret_arn = "<my-redis-password-secret-arn>"
+sg_allow_ingress_to_redis     = "<tfe-eks-nodegroup-sg-id>"

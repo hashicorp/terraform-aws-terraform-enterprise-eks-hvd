@@ -28,7 +28,21 @@ override.tf.json
 
 # Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 # example: *tfplan*
+*tfplan*
 
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+# Ignore Terraform dependency lock files
+.terraform.lock.hcl
+
+# Ignore Terraform Enterprise license files
+*.hclic
+*.rli
+
+# Ignore local dev/test Kubernetes/Helm config files
+local_*.yaml
+
+# Ignore module-generated Helm overrides file
+module_generated_helm_overrides.yaml
