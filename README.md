@@ -80,10 +80,10 @@ One of the following logging destinations:
 
 1. Create/configure/validate the applicable [prerequisites](#prerequisites).
 
-2. Nested within the [examples](./examples/) directory are subdirectories containing ready-made Terraform configurations for example scenarios on how to call and deploy this module. To get started, choose the example scenario that most closely matches your requirements. You can customize your deployment later by adding additional module [inputs](#inputs) as you see fit (see the [Deployment-Customizations](./docs/deployment-customizations.md) doc for more details).
+2. Nested within the [examples](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/tree/main/examples) directory are subdirectories containing ready-made Terraform configurations for example scenarios on how to call and deploy this module. To get started, choose the example scenario that most closely matches your requirements. You can customize your deployment later by adding additional module [inputs](#inputs) as you see fit (see the [Deployment-Customizations](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/tree/main/docs/deployment-customizations.md) doc for more details).
 
 3. Copy all of the Terraform files from your example scenario of choice into a new destination directory to create your Terraform configuration that will manage your TFE deployment. This is a common directory structure for managing multiple TFE deployments:
-   
+
     ```
     .
     └── environments
@@ -112,8 +112,8 @@ One of the following logging destinations:
 
 ## Post Steps
 
-7. Authenticate to your EKS cluster: 
-   
+7. Authenticate to your EKS cluster:
+
    ```shell
    aws eks --region <aws-region> update-kubeconfig --name <eks-cluster-name>
    ```
@@ -121,21 +121,21 @@ One of the following logging destinations:
    >📝 Note: You can get the value of your EKS cluster name from the `eks_cluster_name` Terraform output if you created your EKS cluster via this module.
 
 8. AWS recommends installing the AWS load balancer controller for EKS. If it is not already installed in your EKS cluster, install the AWS load balancer controller within the `kube-system` namespace via the Helm chart:
-   
+
    Add the AWS `eks-charts` Helm chart repository:
-   
+
    ```shell
    helm repo add eks https://aws.github.io/eks-charts
    ```
-   
+
    Update your local repo to make sure that you have the most recent charts:
-   
+
    ```shell
    helm repo update eks
    ```
-   
+
    Install the AWS load balancer controller:
-   
+
    ```shell
    helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
     --namespace kube-system \
@@ -150,21 +150,21 @@ One of the following logging destinations:
    >📝 Note: You can get the value of your AWS load balancer controller IRSA role ARN from the `aws_lb_controller_irsa_role_arn` Terraform output (if `create_aws_lb_controller_irsa` was `true`).
 
 9. Create the Kubernetes namespace for TFE:
-   
+
    ```sh
    kubectl create namespace tfe
    ```
 
    >📝 Note: You can name your TFE namespace something different than `tfe` if you prefer. If you do name it differently, be sure to update your value of the `tfe_kube_namespace` input variable accordingly.
 
-10. Create the required secrets for your TFE deployment within your new Kubernetes namespace for TFE. There are several ways to do this, whether it be from the CLI via `kubectl`, or another method involving a third-party secrets helper/tool. See the [kubernetes-secrets](./docs/kubernetes-secrets.md) docs for details on the required secrets and how to create them.
+10. Create the required secrets for your TFE deployment within your new Kubernetes namespace for TFE. There are several ways to do this, whether it be from the CLI via `kubectl`, or another method involving a third-party secrets helper/tool. See the [kubernetes-secrets](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/tree/main/docs/kubernetes-secrets.md) docs for details on the required secrets and how to create them.
 
-11. This Terraform module will automatically generate a Helm overrides file within your Terraform working directory named `./helm/module_generated_helm_overrides.yaml`. This Helm overrides file contains values interpolated from some of the infrastructure resources that were created by Terraform in step 6. Within the Helm overrides file, update or validate the values for the remaining settings that are enclosed in the `<>` characters. You may also add any additional configuration settings into your Helm overrides file at this time (see the [helm-overrides](./docs/helm-overrides.md) doc for more details).
-    
+11. This Terraform module will automatically generate a Helm overrides file within your Terraform working directory named `./helm/module_generated_helm_overrides.yaml`. This Helm overrides file contains values interpolated from some of the infrastructure resources that were created by Terraform in step 6. Within the Helm overrides file, update or validate the values for the remaining settings that are enclosed in the `<>` characters. You may also add any additional configuration settings into your Helm overrides file at this time (see the [helm-overrides](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/tree/main/docs/helm-overrides.md) doc for more details).
+
 12. Now that you have customized your `module_generated_helm_overrides.yaml` file, rename it to something more applicable to your deployment, such as `prod_tfe_overrides.yaml` (or whatever you prefer). Then, within your `terraform.tfvars` file, set the value of `create_helm_overrides_file` to `false`, as we no longer want the Terraform module to manage this file or generate a new one on a subsequent Terraform run.
 
 13. Add the HashiCorp Helm chart repository:
-   
+
     ```shell
     helm repo add hashicorp https://helm.releases.hashicorp.com
     ```
@@ -172,49 +172,49 @@ One of the following logging destinations:
    >📝 Note: If you have already added the HashiCorp Helm registry, you should run `helm repo update hashicorp` to ensure you have the latest version.
 
 14. Install the TFE application via `helm`:
-   
+
     ```shell
     helm install terraform-enterprise hashicorp/terraform-enterprise --namespace <TFE_NAMESPACE> --values <TFE_OVERRIDES_FILE>
     ```
 
 15. Verify the TFE pod(s) are starting successfully:
-    
+
     View the events within the namespace:
-    
+
     ```shell
     kubectl get events --namespace <TFE_NAMESPACE>
     ```
-    
+
     View the pods within the namespace:
-    
+
     ```shell
     kubectl get pods --namespace <TFE_NAMESPACE>
     ```
 
     View the logs from the pod:
-    
+
     ```shell
     kubectl logs <TFE_POD_NAME> --namespace <TFE_NAMESPACE> -f
     ```
 
 16. Create a DNS record for your TFE FQDN. The DNS record should resolve to your TFE load balancer, depending on how the load balancer was configured during your TFE deployment:
-    
+
     - If you configured a Kubernetes service of type `LoadBalancer` (what the module-generated Helm overrides defaults to), the DNS record should resolve to the DNS name of your AWS network load balancer (NLB).
-      
+
       ```shell
       kubectl get services --namespace <TFE_NAMESPACE>
       ```
-    
+
     - If you configured a custom Kubernetes ingress (meaning you customized your Helm overrides during step 11), the DNS record should resolve to the IP address of your ingress controller load balancer.
-      
+
       ```shell
       kubectl get ingress <INGRESS_NAME> --namespace <INGRESS_NAMESPACE>
       ```
-    
+
     > 📝 Note: If you are creating your DNS record in Route53, AWS recommends creating an _alias_ record (if your TFE load balancer is an AWS-managed load balancer resource).
-  
+
 17. Verify the TFE application is ready:
-      
+
     ```shell
     curl https://<TFE_FQDN>/_health_check
     ```
