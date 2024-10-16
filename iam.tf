@@ -461,7 +461,8 @@ data "aws_iam_policy_document" "aws_load_balancer_controller_policy" {
       "elasticloadbalancing:DescribeTargetGroupAttributes",
       "elasticloadbalancing:DescribeTargetHealth",
       "elasticloadbalancing:DescribeTags",
-      "elasticloadbalancing:DescribeTrustStores"
+      "elasticloadbalancing:DescribeTrustStores",
+      "elasticloadbalancing:DescribeListenerAttributes"
     ]
     resources = ["*"]
   }
@@ -631,7 +632,8 @@ data "aws_iam_policy_document" "aws_load_balancer_controller_policy" {
       "elasticloadbalancing:DeleteLoadBalancer",
       "elasticloadbalancing:ModifyTargetGroup",
       "elasticloadbalancing:ModifyTargetGroupAttributes",
-      "elasticloadbalancing:DeleteTargetGroup"
+      "elasticloadbalancing:DeleteTargetGroup",
+      "elasticloadbalancing:ModifyListenerAttributes"
     ]
     resources = ["*"]
     condition {
