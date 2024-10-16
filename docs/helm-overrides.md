@@ -2,7 +2,7 @@
 
 This doc contains various customizations that are supported within your Helm overrides file for your TFE deployment.
 
-## Scaling TFE Pods
+## Scaling TFE pods
 
 To manage the number of pods running within your TFE deployment, set the value of the `replicaCount` key accordingly.
 

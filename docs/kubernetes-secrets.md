@@ -1,19 +1,21 @@
-# Kubernetes Secrets for TFE
+# Kubernetes secrets for TFE
+
+## Secret types
 
 There are three different types of secrets required for a TFE deployment:
 
 1. Image pull secret for Kubernetes to authenticate to container registry where TFE image is hosted
 2. TFE configuration settings secrets (key/value pairs)
-3. TFE TLS certficate and private key (in PEM format)
+3. TLS certficate and private key (in PEM format)
 
 ### 1. Image pull secret
 
-Username: `terraform`<br>
+Username: `terraform`
 Password: your HashiCorp Terraform Enterprise license file (_e.g._ `terraform.hclic`)
 
 >📝 Note: if you prefer to host the TFE container image somewhere custom, then these values would change accordingly.
 
-### 2. TFE Configuration Settings Secrets
+### 2. TFE configuration settings secrets
 
 - `TFE_LICENSE` - your HashiCorp Terraform Enterprise license file (_e.g._ `terraform.hclic`)
 - `TFE_ENCRYPTION_PASSWORD` - generate this yourself; this is used to encrypt and decrypt TFE's embedded Vault root token and unseal key.
@@ -26,11 +28,11 @@ Password: your HashiCorp Terraform Enterprise license file (_e.g._ `terraform.hc
 
 The TLS certificate and private key must correspond with the chosen FQDN of your TFE instance (_e.g._ `tfe.aws.example.com`). You should have two separate files; one for the certificate (_e.g._ `cert.pem`) and one for the private key (_e.g._ `key.pem`). They must be in PEM format.
 
-## Creating the secrets
+## Creating secrets
 
-There are a plethora of different ways to create secrets in Kubernetes. **If you already have an existing method, tool, or process to do so, then we recommend using that that**. If not, follow the steps below to create your Kubernetes secrets for your TFE deployment.
+There are many ways to create secrets in Kubernetes. **If you already have an existing method, tool, or process to do so, then we recommend using that that**. If not, follow the steps below to create your Kubernetes secrets for your TFE deployment.
 
-### Using `kubectl`
+### Using kubectl
 
 This method involves creating the secrets directly from the CLI via `kubectl`.
 
@@ -59,7 +61,7 @@ kubectl create secret generic tfe-secrets \
 
 >📝 Note: Do not base64-encode these values; the `kubectl` command will do it for you.
 
-#### TLS secrets
+#### TLS certificate and private key
 
 ```sh
 kubectl create secret tls tfe-certs \
@@ -67,9 +69,6 @@ kubectl create secret tls tfe-certs \
   --cert=path/to/tls.crt \
   --key=path/to/tls.key
 ```
-
-[🔙 to Post Steps (main README)](../README.md#post-steps)
-
 
 ## Appendix
 
