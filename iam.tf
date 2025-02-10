@@ -17,6 +17,8 @@ resource "aws_iam_role" "eks_cluster" {
     { "Name" = "${var.friendly_name_prefix}-tfe-eks-cluster-role-${data.aws_region.current.name}" },
     var.common_tags
   )
+
+  permissions_boundary = var.role_permissions_boundary
 }
 
 data "aws_iam_policy_document" "eks_cluster_assume_role" {
@@ -102,6 +104,8 @@ resource "aws_iam_role" "tfe_eks_nodegroup" {
     { "Name" = "${var.friendly_name_prefix}-tfe-eks-node-group-role-${data.aws_region.current.name}" },
     var.common_tags
   )
+
+  permissions_boundary = var.role_permissions_boundary
 }
 
 data "aws_iam_policy_document" "tfe_eks_nodegroup_assume_role" {
@@ -224,6 +228,8 @@ resource "aws_iam_role" "tfe_irsa" {
     { "Name" = "${var.friendly_name_prefix}-tfe-eks-irsa-role-${data.aws_region.current.name}" },
     var.common_tags
   )
+
+  permissions_boundary = var.role_permissions_boundary
 }
 
 data "aws_iam_policy_document" "tfe_irsa_assume_role" {
@@ -382,6 +388,8 @@ resource "aws_iam_role" "aws_lb_controller_irsa" {
     { "Name" = "${var.friendly_name_prefix}-aws-lb-controller-irsa-role-${data.aws_region.current.name}" },
     var.common_tags
   )
+
+  permissions_boundary = var.role_permissions_boundary
 }
 
 data "aws_iam_policy_document" "aws_lb_controller_irsa_assume_role" {
