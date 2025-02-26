@@ -212,6 +212,12 @@ variable "aws_lb_controller_kube_svc_account" {
   default     = "aws-load-balancer-controller"
 }
 
+variable "role_permissions_boundary" {
+  type        = string
+  description = "ARN of the IAM role permissions boundary to be attached."
+  default     = ""
+}
+
 #------------------------------------------------------------------------------
 # EKS
 #------------------------------------------------------------------------------

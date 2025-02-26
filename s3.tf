@@ -96,6 +96,8 @@ resource "aws_iam_role" "s3_crr" {
     { Name = "${var.friendly_name_prefix}-tfe-s3-crr-iam-role-${data.aws_region.current.name}" },
     var.common_tags
   )
+
+  permissions_boundary = var.role_permissions_boundary
 }
 
 data "aws_iam_policy_document" "s3_crr_assume_role" {
