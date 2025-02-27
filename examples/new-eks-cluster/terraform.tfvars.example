@@ -12,11 +12,13 @@ tfe_fqdn                   = "<tfe.aws.example.com>"
 create_helm_overrides_file = true
 
 # --- Networking --- #
-vpc_id                     = "<my-vpc-id>"
-eks_subnet_ids             = ["<my-eks-subnet-id-a>", "<my-eks-subnet-id-b>", "<my-eks-subnet-id-c>"]
-rds_subnet_ids             = ["<my-rds-subnet-id-a>", "<my-rds-subnet-id-b>", "<my-rds-subnet-id-c>"]
-redis_subnet_ids           = ["<my-redis-subnet-id-a>", "<my-redis-subnet-id-b>", "<my-redis-subnet-id-c>"]
-cidr_allow_ingress_tfe_443 = ["0.0.0.0/0"] # CIDR ranges of your TFE users/clients and VCS
+vpc_id                                = "<my-vpc-id>"
+eks_subnet_ids                        = ["<my-eks-subnet-id-a>", "<my-eks-subnet-id-b>", "<my-eks-subnet-id-c>"]
+rds_subnet_ids                        = ["<my-rds-subnet-id-a>", "<my-rds-subnet-id-b>", "<my-rds-subnet-id-c>"]
+redis_subnet_ids                      = ["<my-redis-subnet-id-a>", "<my-redis-subnet-id-b>", "<my-redis-subnet-id-c>"]
+cidr_allow_ingress_tfe_443            = ["0.0.0.0/0"] # CIDR ranges of your TFE users/clients and VCS
+cidr_allow_ingress_tfe_metrics_http   = ["0.0.0.0/0"] 
+cidr_allow_ingress_tfe_metrics_https  = ["0.0.0.0/0"]
 
 # --- IAM --- #
 create_eks_oidc_provider      = true
