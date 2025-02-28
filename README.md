@@ -80,7 +80,7 @@ One of the following logging destinations:
 
 1. Create/configure/validate the applicable [prerequisites](#prerequisites).
 
-2. Nested within the [examples](./examples/) directory are subdirectories containing ready-made Terraform configurations for example scenarios on how to call and deploy this module. To get started, choose the example scenario that most closely matches your requirements. You can customize your deployment later by adding additional module [inputs](#inputs) as you see fit (see the [Deployment-Customizations](./docs/deployment-customizations.md) doc for more details).
+2. Nested within the [examples](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.1.1/examples/) directory are subdirectories containing ready-made Terraform configurations for example scenarios on how to call and deploy this module. To get started, choose the example scenario that most closely matches your requirements. You can customize your deployment later by adding additional module [inputs](#inputs) as you see fit (see the [Deployment-Customizations](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.1.1/docs/deployment-customizations.md) doc for more details).
 
 3. Copy all of the Terraform files from your example scenario of choice into a new destination directory to create your Terraform configuration that will manage your TFE deployment. This is a common directory structure for managing multiple TFE deployments:
    
@@ -157,9 +157,9 @@ One of the following logging destinations:
 
    >📝 Note: You can name your TFE namespace something different than `tfe` if you prefer. If you do name it differently, be sure to update your value of the `tfe_kube_namespace` input variable accordingly.
 
-10. Create the required secrets for your TFE deployment within your new Kubernetes namespace for TFE. There are several ways to do this, whether it be from the CLI via `kubectl`, or another method involving a third-party secrets helper/tool. See the [kubernetes-secrets](./docs/kubernetes-secrets.md) docs for details on the required secrets and how to create them.
+10. Create the required secrets for your TFE deployment within your new Kubernetes namespace for TFE. There are several ways to do this, whether it be from the CLI via `kubectl`, or another method involving a third-party secrets helper/tool. See the [kubernetes-secrets](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.1.1/docs/kubernetes-secrets.md) docs for details on the required secrets and how to create them.
 
-11. This Terraform module will automatically generate a Helm overrides file within your Terraform working directory named `./helm/module_generated_helm_overrides.yaml`. This Helm overrides file contains values interpolated from some of the infrastructure resources that were created by Terraform in step 6. Within the Helm overrides file, update or validate the values for the remaining settings that are enclosed in the `<>` characters. You may also add any additional configuration settings into your Helm overrides file at this time (see the [helm-overrides](./docs/helm-overrides.md) doc for more details).
+11. This Terraform module will automatically generate a Helm overrides file within your Terraform working directory named `./helm/module_generated_helm_overrides.yaml`. This Helm overrides file contains values interpolated from some of the infrastructure resources that were created by Terraform in step 6. Within the Helm overrides file, update or validate the values for the remaining settings that are enclosed in the `<>` characters. You may also add any additional configuration settings into your Helm overrides file at this time (see the [helm-overrides](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.1.1/docs/helm-overrides.md) doc for more details).
     
 12. Now that you have customized your `module_generated_helm_overrides.yaml` file, rename it to something more applicable to your deployment, such as `prod_tfe_overrides.yaml` (or whatever you prefer). Then, within your `terraform.tfvars` file, set the value of `create_helm_overrides_file` to `false`, as we no longer want the Terraform module to manage this file or generate a new one on a subsequent Terraform run.
 
@@ -227,13 +227,13 @@ One of the following logging destinations:
 
 Below are links to various docs related to the customization and management of your TFE deployment:
 
- - [Deployment customizations](./docs/deployment-customizations.md)
- - [Helm overrides](./docs/helm-overrides.md)
- - [TFE version upgrades](./docs/tfe-version-upgrades.md)
- - [TFE TLS certificate rotation](./docs/tfe-cert-rotation.md)
- - [TFE configuration settings](./docs/tfe-config-settings.md)
- - [TFE Kubernetes secrets](./docs-kubernetes-secrets.md)
- - [TFE IAM role for service accounts](./docs/tfe-irsa.md)
+ - [Deployment customizations](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.1.1/docs/deployment-customizations.md)
+ - [Helm overrides](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.1.1/docs/helm-overrides.md)
+ - [TFE version upgrades](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.1.1/docs/tfe-version-upgrades.md)
+ - [TFE TLS certificate rotation](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.1.1/docs/tfe-cert-rotation.md)
+ - [TFE configuration settings](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.1.1/docs/tfe-config-settings.md)
+ - [TFE Kubernetes secrets](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.1.1/docs-kubernetes-secrets.md)
+ - [TFE IAM role for service accounts](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.1.1/docs/tfe-irsa.md)
 
 ---
 
