@@ -22,7 +22,7 @@ variable "friendly_name_prefix" {
   description = "Friendly name prefix used for uniquely naming all AWS resources for this deployment. Most commonly set to either an environment (e.g. 'sandbox', 'prod') a team name, or a project name."
 
   validation {
-    condition     = !strcontains(lower(var.friendly_name_prefix), "tfe")
+    condition     = ! strcontains(lower(var.friendly_name_prefix), "tfe")
     error_message = "Value must not contain the substring 'tfe' to avoid redundancy in resource naming."
   }
 }
@@ -132,7 +132,7 @@ variable "cidr_allow_egress_from_tfe_lb" {
   default     = null
 
   validation {
-    condition     = !var.create_tfe_lb_security_group ? var.cidr_allow_egress_from_tfe_lb == null : true
+    condition     = ! var.create_tfe_lb_security_group ? var.cidr_allow_egress_from_tfe_lb == null : true
     error_message = "Value must be `null` when `create_tfe_lb_security_group` is `false`."
   }
 
@@ -148,7 +148,7 @@ variable "sg_allow_egress_from_tfe_lb" {
   default     = null
 
   validation {
-    condition     = !var.create_tfe_lb_security_group ? var.sg_allow_egress_from_tfe_lb == null : true
+    condition     = ! var.create_tfe_lb_security_group ? var.sg_allow_egress_from_tfe_lb == null : true
     error_message = "Value must be `null` when `create_tfe_lb_security_group` is `false`."
   }
 
@@ -173,7 +173,7 @@ variable "eks_oidc_provider_arn" {
   default     = null
 
   validation {
-    condition     = var.create_tfe_eks_irsa && !var.create_eks_oidc_provider ? var.eks_oidc_provider_arn != null : true
+    condition     = var.create_tfe_eks_irsa && ! var.create_eks_oidc_provider ? var.eks_oidc_provider_arn != null : true
     error_message = "Value of existing OIDC provider ARN is required when `create_tfe_eks_irsa` is `true` and `create_eks_oidc_provider` is `false`."
   }
 }
@@ -184,7 +184,7 @@ variable "eks_oidc_provider_url" {
   default     = null
 
   validation {
-    condition     = var.create_eks_oidc_provider && !var.create_eks_cluster ? var.eks_oidc_provider_url != null : true
+    condition     = var.create_eks_oidc_provider && ! var.create_eks_cluster ? var.eks_oidc_provider_url != null : true
     error_message = "Value of existing OIDC provider URL is required when `create_eks_oidc_provider` is `false`."
   }
 }
@@ -223,6 +223,11 @@ variable "aws_lb_controller_kube_svc_account" {
   type        = string
   description = "Name of Kubernetes service account for AWS Load Balancer Controller (to be created by Helm chart). Used to configure EKS [IRSA](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html)."
   default     = "aws-load-balancer-controller"
+}
+variable "role_permissions_boundary" {
+  type        = string
+  description = "ARN of the IAM role permissions boundary to be attached."
+  default     = ""
 }
 
 #------------------------------------------------------------------------------
@@ -385,7 +390,7 @@ variable "rds_global_cluster_id" {
   }
 
   validation {
-    condition     = !var.is_secondary_region ? var.rds_global_cluster_id == null : true
+    condition     = ! var.is_secondary_region ? var.rds_global_cluster_id == null : true
     error_message = "Value must be `null` when `is_secondary_region` is `false`."
   }
 }
@@ -430,7 +435,7 @@ variable "rds_replication_source_identifier" {
   }
 
   validation {
-    condition     = !var.is_secondary_region ? var.rds_replication_source_identifier == null : true
+    condition     = ! var.is_secondary_region ? var.rds_replication_source_identifier == null : true
     error_message = "Value must be `null` when `is_secondary_region` is `false`."
   }
 }
@@ -446,7 +451,7 @@ variable "rds_source_region" {
   }
 
   validation {
-    condition     = !var.is_secondary_region ? var.rds_source_region == null : true
+    condition     = ! var.is_secondary_region ? var.rds_source_region == null : true
     error_message = "Value must be `null` when `is_secondary_region` is `false`."
   }
 }
@@ -553,7 +558,7 @@ variable "tfe_object_storage_s3_access_key_id" {
   default     = null
 
   validation {
-    condition     = !var.tfe_object_storage_s3_use_instance_profile ? var.tfe_object_storage_s3_access_key_id != null : true
+    condition     = ! var.tfe_object_storage_s3_use_instance_profile ? var.tfe_object_storage_s3_access_key_id != null : true
     error_message = "Value must be set when `tfe_object_storage_s3_use_instance_profile` is `false`."
   }
 
@@ -569,7 +574,7 @@ variable "tfe_object_storage_s3_secret_access_key" {
   default     = null
 
   validation {
-    condition     = !var.tfe_object_storage_s3_use_instance_profile ? var.tfe_object_storage_s3_secret_access_key != null : true
+    condition     = ! var.tfe_object_storage_s3_use_instance_profile ? var.tfe_object_storage_s3_secret_access_key != null : true
     error_message = "Value must be set when `tfe_object_storage_s3_use_instance_profile` is `false`."
   }
 
@@ -591,7 +596,7 @@ variable "s3_enable_bucket_replication" {
   default     = false
 
   validation {
-    condition     = var.is_secondary_region ? !var.s3_enable_bucket_replication : true
+    condition     = var.is_secondary_region ? ! var.s3_enable_bucket_replication : true
     error_message = "Cross-region replication cannot be enabled when `is_secondary_region` is `true`."
   }
 
