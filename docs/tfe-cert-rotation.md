@@ -4,7 +4,7 @@ If your TFE TLS certificates are set to expire, you will need to rotate new ones
 
 ## Procedure
 
-1. Generate your new TFE TLS certificates from your Certificate Authority. Reference the [TLS Certificate and Private Key](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.1.1/docs/kubernetes-secrets.md#3-tlsssl-certificate-and-private-key) section of the [kubernetes-secrets](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.1.1/docs/kubernetes-secrets.md) doc for specific details on which files and format are required.
+1. Generate your new TFE TLS certificates from your Certificate Authority. Reference the [TLS Certificate and Private Key](./kubernetes-secrets.md#3-tlsssl-certificate-and-private-key) section of the [kubernetes-secrets](./kubernetes-secrets.md) doc for specific details on which files and format are required.
 
 
 2. Run the following command to update your existing Kubernetes secret for your TFE TLS certificates:

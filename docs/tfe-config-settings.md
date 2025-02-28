@@ -2,7 +2,7 @@
 
 The TFE configuration settings for your deployment are managed within your Helm overrides file. If you would like to add or modify a configuration setting(s) within your deployment, you must edit your Helm overrides file, specifically the `env.variables` section, and then subsequently run `helm upgrade` on your TFE release. See the [TFE configuration reference](https://developer.hashicorp.com/terraform/enterprise/flexible-deployments/install/configuration) doc for details on all of the available settings.
 
->📝 Note: The steps below only pertain to the TFE configuration settings that are not configured as secrets. The sensitive configuration settings and their values were created as Kubernetes secrets during the initial TFE deployment (see the [kubernetes-secrets](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.1.1/docs/kubernetes-secrets.md) doc for more details on which settings are considered sensitive).
+>📝 Note: The steps below only pertain to the TFE configuration settings that are not configured as secrets. The sensitive configuration settings and their values were created as Kubernetes secrets during the initial TFE deployment (see the [kubernetes-secrets](./kubernetes-secrets.md) doc for more details on which settings are considered sensitive).
 
 ## Procedure
 
