@@ -161,7 +161,7 @@ resource "aws_security_group_rule" "tfe_eks_nodegroup_allow_tfe_https_from_lb" {
 }
 
 resource "aws_security_group_rule" "tfe_eks_nodegroup_allow_tfe_metrics_http_from_cidr" {
-  count = var.cidr_allow_ingress_tfe_metrics_http != null ? ( var.create_eks_cluster && length(aws_security_group.tfe_lb_allow) > 0 && length(var.cidr_allow_ingress_tfe_metrics_http) > 0 ? 1 : 0) : 0
+  count = var.cidr_allow_ingress_tfe_metrics_http != null ? (var.create_eks_cluster && length(aws_security_group.tfe_lb_allow) > 0 && length(var.cidr_allow_ingress_tfe_metrics_http) > 0 ? 1 : 0) : 0
 
   type        = "ingress"
   from_port   = var.tfe_metrics_http_port
@@ -174,7 +174,7 @@ resource "aws_security_group_rule" "tfe_eks_nodegroup_allow_tfe_metrics_http_fro
 }
 
 resource "aws_security_group_rule" "tfe_eks_nodegroup_allow_tfe_metrics_https_from_cidr" {
-  count = var.cidr_allow_ingress_tfe_metrics_https != null ? ( var.create_eks_cluster && length(aws_security_group.tfe_lb_allow) > 0 && length(var.cidr_allow_ingress_tfe_metrics_https) > 0 ? 1 : 0) : 0
+  count = var.cidr_allow_ingress_tfe_metrics_https != null ? (var.create_eks_cluster && length(aws_security_group.tfe_lb_allow) > 0 && length(var.cidr_allow_ingress_tfe_metrics_https) > 0 ? 1 : 0) : 0
 
   type        = "ingress"
   from_port   = var.tfe_metrics_https_port

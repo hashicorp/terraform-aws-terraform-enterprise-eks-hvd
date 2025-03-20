@@ -107,7 +107,7 @@ variable "cidr_allow_ingress_tfe_metrics_http" {
   default     = []
 
   validation {
-    condition = var.cidr_allow_ingress_tfe_metrics_http != null ? length(var.cidr_allow_ingress_tfe_metrics_http) > 0 : true
+    condition     = var.cidr_allow_ingress_tfe_metrics_http != null ? length(var.cidr_allow_ingress_tfe_metrics_http) > 0 : true
     error_message = "If not null, must contain at least one CIDR range. ."
   }
 }
@@ -118,7 +118,7 @@ variable "cidr_allow_ingress_tfe_metrics_https" {
   default     = []
 
   validation {
-    condition = var.cidr_allow_ingress_tfe_metrics_https != null ? length(var.cidr_allow_ingress_tfe_metrics_https) > 0 : true
+    condition     = var.cidr_allow_ingress_tfe_metrics_https != null ? length(var.cidr_allow_ingress_tfe_metrics_https) > 0 : true
     error_message = "If not null, must contain at least one CIDR range."
   }
 }
@@ -623,6 +623,12 @@ variable "tfe_redis_password_secret_arn" {
   type        = string
   description = "ARN of AWS Secrets Manager secret for the TFE Redis password. Value of secret must contain from 16 to 128 alphanumeric characters or symbols (excluding @, \", and /)."
   default     = null
+}
+
+variable "redis_snapshot_retention_limit" {
+  default     = 0
+  description = "Number of days that the Redis cluster will retain a snapshot for before deletion"
+  type        = number
 }
 
 variable "redis_engine_version" {

@@ -37,8 +37,9 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
   kms_key_id                 = var.redis_at_rest_encryption_enabled && var.redis_kms_key_arn != null ? var.redis_kms_key_arn : null
   transit_encryption_enabled = var.redis_transit_encryption_enabled
   auth_token                 = var.tfe_redis_password_secret_arn != null ? data.aws_secretsmanager_secret_version.tfe_redis_password.secret_string : null
-  snapshot_retention_limit   = 0
+  snapshot_retention_limit   = var.redis_snapshot_retention_limit
   apply_immediately          = var.redis_apply_immediately
+
   auto_minor_version_upgrade = var.redis_auto_minor_version_upgrade
 
   tags = merge({ "Name" = "${var.friendly_name_prefix}-tfe-redis" }, var.common_tags)
