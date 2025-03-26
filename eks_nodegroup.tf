@@ -102,6 +102,14 @@ resource "aws_launch_template" "tfe_eks_nodegroup" {
 
   ebs_optimized = true
 
+  metadata_options {
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 2
+    http_endpoint               = "enabled"
+    http_protocol_ipv6          = "disabled"
+    instance_metadata_tags      = "disabled"
+  }  
+
   tag_specifications {
     resource_type = "instance"
     tags = {
