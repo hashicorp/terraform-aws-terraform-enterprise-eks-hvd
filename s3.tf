@@ -12,7 +12,7 @@ resource "aws_s3_bucket" "tfe" {
     var.common_tags
   )
 
-  force_destroy = true
+  force_destroy = var.force_destroy_s3_bucket
 }
 
 resource "aws_s3_bucket_public_access_block" "tfe" {
