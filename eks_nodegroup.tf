@@ -102,8 +102,7 @@ resource "aws_launch_template" "tfe_eks_nodegroup" {
 
   ebs_optimized = true
    
-  # Added to avoid issues related to this KB article
-  # https://support.hashicorp.com/hc/en-us/articles/35213717169427-Terraform-Enterprise-FDO-fails-to-start-with-EKS-version-1-30
+  // https://support.hashicorp.com/hc/en-us/articles/35213717169427-Terraform-Enterprise-FDO-fails-to-start-with-EKS-version-1-30
   metadata_options {
     http_tokens                 = "required"
     http_put_response_hop_limit = 2
@@ -195,19 +194,6 @@ resource "aws_security_group_rule" "tfe_eks_nodegroup_allow_tfe_metrics_https_fr
 
   security_group_id = aws_security_group.tfe_eks_nodegroup_allow[0].id
 }
-
-// Direct access to TFE pods from CIDR over 443 should not be needed
-# resource "aws_security_group_rule" "tfe_eks_nodegroup_allow_tfe_from_cidr" {
-#   count = var.create_eks_cluster ? 1 : 0
-
-#   type              = "ingress"
-#   from_port         = 443
-#   to_port           = 443
-#   protocol          = "tcp"
-#   cidr_blocks       = var.cidr_allow_ingress_tfe_443
-#   description       = "Allow TCP/443 (HTTPS) inbound to node group from specified CIDR ranges."
-#   security_group_id = aws_security_group.tfe_eks_nodegroup_allow[0].id
-# }
 
 resource "aws_security_group_rule" "tfe_eks_nodegroup_allow_443_from_cluster" {
   count = var.create_eks_cluster ? 1 : 0
