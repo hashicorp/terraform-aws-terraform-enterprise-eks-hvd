@@ -152,7 +152,7 @@ resource "aws_security_group_rule" "tfe_eks_nodegroup_allow_tfe_http_from_lb" {
   to_port                  = var.tfe_http_port
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.tfe_lb_allow[0].id
-  description              = "Allow TCP/8443 (TFE HTTP) inbound to node group from TFE load balancer."
+  description              = "Allow TCP/8080 or specified port (TFE HTTP) inbound to node group from TFE load balancer."
 
   security_group_id = aws_security_group.tfe_eks_nodegroup_allow[0].id
 }
@@ -165,33 +165,33 @@ resource "aws_security_group_rule" "tfe_eks_nodegroup_allow_tfe_https_from_lb" {
   to_port                  = var.tfe_https_port
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.tfe_lb_allow[0].id
-  description              = "Allow TCP/8443 (TFE HTTPS) inbound to node group from TFE load balancer."
+  description              = "Allow TCP/8443 or specified port (TFE HTTPS) inbound to node group from TFE load balancer."
 
   security_group_id = aws_security_group.tfe_eks_nodegroup_allow[0].id
 }
 
 resource "aws_security_group_rule" "tfe_eks_nodegroup_allow_tfe_metrics_http_from_cidr" {
-  count = var.cidr_allow_ingress_tfe_metrics_http != null ? ( var.create_eks_cluster && length(aws_security_group.tfe_lb_allow) > 0 && length(var.cidr_allow_ingress_tfe_metrics_http) > 0 ? 1 : 0) : 0
+  count = var.cidr_allow_ingress_tfe_metrics_http != null ? 1 : 0
 
   type        = "ingress"
   from_port   = var.tfe_metrics_http_port
   to_port     = var.tfe_metrics_http_port
   protocol    = "tcp"
   cidr_blocks = var.cidr_allow_ingress_tfe_metrics_http
-  description = "Allow TCP/9090 (TFE HTTP metrics endpoint) inbound to node group from specified CIDR ranges."
+  description = "Allow TCP/9090 or specified port (TFE HTTP metrics endpoint) inbound to node group from specified CIDR ranges."
 
   security_group_id = aws_security_group.tfe_eks_nodegroup_allow[0].id
 }
 
 resource "aws_security_group_rule" "tfe_eks_nodegroup_allow_tfe_metrics_https_from_cidr" {
-  count = var.cidr_allow_ingress_tfe_metrics_https != null ? ( var.create_eks_cluster && length(aws_security_group.tfe_lb_allow) > 0 && length(var.cidr_allow_ingress_tfe_metrics_https) > 0 ? 1 : 0) : 0
+  count = var.cidr_allow_ingress_tfe_metrics_https != null ? 1 : 0
 
   type        = "ingress"
   from_port   = var.tfe_metrics_https_port
   to_port     = var.tfe_metrics_https_port
   protocol    = "tcp"
   cidr_blocks = var.cidr_allow_ingress_tfe_metrics_https
-  description = "Allow TCP/9091 (TFE HTTPS metrics endpoint) inbound to node group from specified CIDR ranges."
+  description = "Allow TCP/9091 or specified port (TFE HTTPS metrics endpoint) inbound to node group from specified CIDR ranges."
 
   security_group_id = aws_security_group.tfe_eks_nodegroup_allow[0].id
 }
