@@ -3,8 +3,9 @@
 
 locals {
   helm_overrides_values = {
-    # IAM role for TFE Kubernetes service account (IRSA)
-    tfe_eks_irsa_arn = var.create_tfe_eks_irsa ? aws_iam_role.tfe_irsa[0].arn : ""
+    # Service account
+    tfe_eks_irsa_arn     = var.create_tfe_eks_irsa ? aws_iam_role.tfe_irsa[0].arn : ""
+    tfe_kube_svc_account = var.tfe_kube_svc_account
 
     # Service annotations
     tfe_lb_security_groups = var.create_eks_cluster ? aws_security_group.tfe_lb_allow[0].id : ""
