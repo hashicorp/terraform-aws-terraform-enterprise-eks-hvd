@@ -48,8 +48,9 @@ Terraform module aligned with HashiCorp Validated Designs (HVD) to deploy Terraf
   - Private key must **not** be password protected
 - TLS certificate authority (CA) bundle (_e.g._ `ca_bundle.pem`) corresponding with the CA that issues your TFE TLS certificates
   - CA bundle must be in PEM format
+  - You may include additional certificate chains corresponding to external systems that TFE will make outbound connections to (_e.g._ your self-hosted VCS, if its certificate was issued by a different CA than your TFE certificate).
 
->📝 Note: The TLS certificate and private key will be created as Kubernetes secrets durint the [Post Steps](#post-steps).
+>📝 Note: The TLS certificate and private key will be created as Kubernetes secrets during the [Post Steps](#post-steps).
 
 ### Secrets management
 
