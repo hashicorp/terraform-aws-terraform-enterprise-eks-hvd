@@ -11,6 +11,8 @@ resource "aws_s3_bucket" "tfe" {
     { "Name" = "${var.friendly_name_prefix}-tfe-app-${data.aws_region.current.name}-${data.aws_caller_identity.current.account_id}" },
     var.common_tags
   )
+
+  force_destroy = var.force_destroy_s3_bucket
 }
 
 resource "aws_s3_bucket_public_access_block" "tfe" {

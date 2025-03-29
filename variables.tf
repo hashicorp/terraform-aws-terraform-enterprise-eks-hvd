@@ -20,6 +20,12 @@ variable "common_tags" {
   default     = {}
 }
 
+variable "force_destroy_s3_bucket" {
+  type = bool
+  description = "ability to detroy the s3 bucket if needed"
+  default = false
+}
+
 variable "is_secondary_region" {
   type        = bool
   description = "Boolean indicating whether this TFE deployment is in the 'primary' region or 'secondary' region."
