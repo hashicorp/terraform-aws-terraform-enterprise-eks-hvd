@@ -125,4 +125,10 @@ output "tfe_redis_password_base64" {
   sensitive   = true
 }
 
-
+#------------------------------------------------------------------------------
+# Helm values
+#------------------------------------------------------------------------------
+output "tfe_helm_overrides_content" {
+  value       = try(local_file.helm_overrides_values[0].content, null)
+  description = "Content of the helm overrides file."
+}
