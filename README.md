@@ -120,6 +120,7 @@ One of the following logging destinations:
    ```
 
    >📝 Note: You can get the value of your EKS cluster name from the `eks_cluster_name` Terraform output if you created your EKS cluster via this module.
+   >📝 Note: If you are running this command an an AWS identity *other than* the one that created the cluster, you will need to create additional [access entries](https://docs.aws.amazon.com/eks/latest/userguide/access-entries.html) similar to the ones created [here](./eks_cluster.tf#L44)
 
 8. AWS recommends installing the AWS load balancer controller for EKS. If it is not already installed in your EKS cluster, install the AWS load balancer controller within the `kube-system` namespace via the Helm chart:
    
