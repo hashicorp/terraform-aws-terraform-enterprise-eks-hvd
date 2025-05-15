@@ -222,7 +222,7 @@ One of the following logging destinations:
     curl https://<TFE_FQDN>/_health_check
     ```
 
-18. Follow the remaining steps [here](https://developer.hashicorp.com/terraform/enterprise/flexible-deployments/install/kubernetes/install#4-create-initial-admin-user) to finish the installation setup, which involves creating the **initial admin user**.
+18. Follow the remaining steps [here](https://developer.hashicorp.com/terraform/enterprise/flexible-deployments/install/kubernetes/install#create-initial-admin-user) to finish the installation setup, which involves creating the **initial admin user**.
 
 ---
 
