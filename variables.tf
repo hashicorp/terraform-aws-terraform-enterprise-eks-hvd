@@ -86,7 +86,6 @@ variable "rds_subnet_ids" {
 variable "redis_subnet_ids" {
   type        = list(string)
   description = "List of subnet IDs to use for Redis cluster subnet group."
-  default     = null
 }
 
 variable "create_tfe_lb_security_group" {
@@ -190,6 +189,20 @@ variable "create_tfe_eks_irsa" {
   type        = bool
   description = "Boolean to create TFE IAM role and policies to enable TFE EKS IAM role for service accounts (IRSA)."
   default     = false
+  validation {
+    condition     = !(var.create_tfe_eks_irsa && var.create_tfe_eks_pod_identity)
+    error_message = "Only one of create_tfe_eks_pod_identity or create_tfe_eks_irsa is allowed."
+  }
+}
+
+variable "create_tfe_eks_pod_identity" {
+  type        = bool
+  description = "Boolean to create TFE IAM role and policies with the EKS addon to enable TFE EKS IAM role using Pod Identity."
+  default     = false
+  # validation {
+  #   condition     = !(var.create_tfe_eks_irsa && var.create_tfe_eks_pod_identity)
+  #   error_message = "Only one of create_tfe_eks_pod_identity or create_tfe_eks_irsa is allowed."
+  # }
 }
 
 variable "tfe_kube_namespace" {
@@ -622,7 +635,6 @@ variable "s3_destination_bucket_kms_key_arn" {
 variable "tfe_redis_password_secret_arn" {
   type        = string
   description = "ARN of AWS Secrets Manager secret for the TFE Redis password. Value of secret must contain from 16 to 128 alphanumeric characters or symbols (excluding @, \", and /)."
-  default     = null
 }
 
 variable "redis_engine_version" {
