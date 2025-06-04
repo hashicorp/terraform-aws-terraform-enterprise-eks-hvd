@@ -7,15 +7,16 @@ tls:
 image:
  repository: images.releases.hashicorp.com
  name: hashicorp/terraform-enterprise
- tag: <v202503-1> # refer to https://developer.hashicorp.com/terraform/enterprise/releases
+ tag: <v202505-1> # refer to https://developer.hashicorp.com/terraform/enterprise/releases
 
-# TODO: reconcile for EKS PI
-%{ if tfe_eks_irsa_arn != "" ~}
+%{ if create_service_account ~}
 serviceAccount:
   enabled: true
   name: ${tfe_kube_svc_account}
+%{ if tfe_eks_irsa_arn != "" ~}
   annotations:
     eks.amazonaws.com/role-arn: ${tfe_eks_irsa_arn}
+%{ endif ~}
 %{ endif ~}
 
 tfe:
