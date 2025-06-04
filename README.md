@@ -166,6 +166,8 @@ One of the following logging destinations:
 10. Create the required secrets for your TFE deployment within your new Kubernetes namespace for TFE. There are several ways to do this, whether it be from the CLI via `kubectl`, or another method involving a third-party secrets helper/tool. See the [kubernetes-secrets](./docs/kubernetes-secrets.md) docs for details on the required secrets and how to create them.
 
 11. This Terraform module will automatically generate a Helm overrides file within your Terraform working directory named `./helm/module_generated_helm_overrides.yaml`. This Helm overrides file contains values interpolated from some of the infrastructure resources that were created by Terraform in step 6. Within the Helm overrides file, update or validate the values for the remaining settings that are enclosed in the `<>` characters. You may also add any additional configuration settings into your Helm overrides file at this time (see the [helm-overrides](./docs/helm-overrides.md) doc for more details).
+
+TODO: incorporate this `cat state.json|jq -r  '.resources[] | select(.name == "helm_overrides_values" and .type == "local_file") | .instances[0].attributes.content'|less`
     
 12. Now that you have customized your `module_generated_helm_overrides.yaml` file, rename it to something more applicable to your deployment, such as `prod_tfe_overrides.yaml` (or whatever you prefer). Then, within your `terraform.tfvars` file, set the value of `create_helm_overrides_file` to `false`, as we no longer want the Terraform module to manage this file or generate a new one on a subsequent Terraform run.
 
