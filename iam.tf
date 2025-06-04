@@ -773,15 +773,15 @@ data "aws_iam_policy_document" "aws_load_balancer_controller_policy" {
 resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller_policy" {
   count = var.create_aws_lb_controller_irsa ? 1 : 0
 
-  policy_arn = aws_iam_policy.aws_load_balancer_controller_policy[0].arn
   role       = aws_iam_role.aws_lb_controller_irsa[0].name
+  policy_arn = aws_iam_policy.aws_load_balancer_controller_policy[0].arn
 }
 
 resource "aws_iam_role_policy_attachment" "aws_lb_pi_policy_attachment" {
   count = var.create_tfe_eks_pod_identity ? 1 : 0
 
   role       = aws_iam_role.aws_lb_pi[0].name
-  policy_arn = aws_iam_policy.tfe_irsa[0].arn
+  policy_arn = aws_iam_policy.aws_load_balancer_controller_policy[0].arn
 }
 
 resource "aws_eks_pod_identity_association" "aws_lb_controller_association" {
