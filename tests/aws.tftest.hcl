@@ -93,6 +93,21 @@ run "pod_identity_option_creates_addon" {
     condition     = length(aws_eks_addon.pod_identity) == 1
     error_message = "Pod Identity addon not created when expected."
   }
+
+  assert {
+    condition     = length(aws_eks_pod_identity_association.tfe_association) == 1
+    error_message = "Pod Identity association for TFE not created when expected."
+  }
+
+  assert {
+    condition     = length(aws_eks_pod_identity_association.aws_lb_controller_association) == 1
+    error_message = "Pod Identity association for LB controller not created when expected."
+  }
+
+  assert {
+    condition     = length(aws_iam_role.tfe_pi) == 1
+    error_message = "IAM Role for Pod Identity not created when expected."
+  }
 }
 
 run "no_pod_identity_option_creates_addon" {
@@ -105,6 +120,21 @@ run "no_pod_identity_option_creates_addon" {
   assert {
     condition     = length(aws_eks_addon.pod_identity) == 0
     error_message = "Pod Identity addon created when not expected."
+  }
+
+  assert {
+    condition     = length(aws_eks_pod_identity_association.tfe_association) == 0
+    error_message = "Pod Identity association for TFE created when not expected."
+  }
+
+  assert {
+    condition     = length(aws_eks_pod_identity_association.aws_lb_controller_association) == 0
+    error_message = "Pod Identity association for LB controller when not expected."
+  }
+
+  assert {
+    condition     = length(aws_iam_role.tfe_pi) == 0
+    error_message = "IAM Role for Pod Identity created when not expected."
   }
 }
 

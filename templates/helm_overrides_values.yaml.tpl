@@ -9,6 +9,7 @@ image:
  name: hashicorp/terraform-enterprise
  tag: <v202503-1> # refer to https://developer.hashicorp.com/terraform/enterprise/releases
 
+# TODO: reconcile for EKS PI
 %{ if tfe_eks_irsa_arn != "" ~}
 serviceAccount:
   enabled: true

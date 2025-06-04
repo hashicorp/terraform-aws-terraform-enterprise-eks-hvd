@@ -259,8 +259,37 @@ data "aws_iam_policy_document" "tfe_irsa_assume_role" {
   }
 }
 
+#------------------------------------------------------------------------------
+# Pod Identity for TFE
+#------------------------------------------------------------------------------
+resource "aws_iam_role" "tfe_pi" {
+  count = var.create_tfe_eks_pod_identity ? 1 : 0
+
+  name        = "${var.friendly_name_prefix}-tfe-eks-pi-role-${data.aws_region.current.name}"
+  path        = "/"
+  description = "IAM role for TFE Pod Identity."
+
+  assume_role_policy = data.aws_iam_policy_document.tfe_pi_assume_role[0].json
+
+}
+
+data "aws_iam_policy_document" "tfe_pi_assume_role" {
+  count = var.create_tfe_eks_pod_identity ? 1 : 0
+
+  statement {
+    sid     = "TfePiAssumeRole"
+    effect  = "Allow"
+    actions = ["sts:AssumeRole", "sts:TagSession"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["pods.eks.amazonaws.com"]
+    }
+  }
+}
+
 data "aws_iam_policy_document" "tfe_irsa_s3" {
-  count = var.create_tfe_eks_irsa && var.tfe_object_storage_s3_use_instance_profile ? 1 : 0
+  count = (var.create_tfe_eks_irsa || var.create_tfe_eks_pod_identity) && var.tfe_object_storage_s3_use_instance_profile ? 1 : 0
 
   statement {
     sid    = "TfeIrsaAllowS3"
@@ -280,7 +309,7 @@ data "aws_iam_policy_document" "tfe_irsa_s3" {
 }
 
 data "aws_iam_policy_document" "tfe_irsa_cost_estimation" {
-  count = var.create_tfe_eks_irsa && var.tfe_cost_estimation_iam_enabled ? 1 : 0
+  count = (var.create_tfe_eks_irsa || var.create_tfe_eks_pod_identity) && var.tfe_cost_estimation_iam_enabled ? 1 : 0
 
   statement {
     sid    = "TfeIrsaAllowCostEstimation"
@@ -295,7 +324,7 @@ data "aws_iam_policy_document" "tfe_irsa_cost_estimation" {
 }
 
 data "aws_iam_policy_document" "tfe_irsa_rds_kms_cmk" {
-  count = var.create_tfe_eks_irsa && var.rds_kms_key_arn != null ? 1 : 0
+  count = (var.create_tfe_eks_irsa || var.create_tfe_eks_pod_identity) && var.rds_kms_key_arn != null ? 1 : 0
 
   statement {
     sid    = "TfeIrsaAllowRdsKmsCmk"
@@ -312,7 +341,7 @@ data "aws_iam_policy_document" "tfe_irsa_rds_kms_cmk" {
 }
 
 data "aws_iam_policy_document" "tfe_irsa_s3_kms_cmk" {
-  count = var.create_tfe_eks_irsa && var.rds_kms_key_arn != null ? 1 : 0
+  count = (var.create_tfe_eks_irsa || var.create_tfe_eks_pod_identity) && var.rds_kms_key_arn != null ? 1 : 0
 
   statement {
     sid    = "TfeIrsaAllowS3KmsCmk"
@@ -329,7 +358,7 @@ data "aws_iam_policy_document" "tfe_irsa_s3_kms_cmk" {
 }
 
 data "aws_iam_policy_document" "tfe_irsa_redis_kms_cmk" {
-  count = var.create_tfe_eks_irsa && var.redis_kms_key_arn != null ? 1 : 0
+  count = (var.create_tfe_eks_irsa || var.create_tfe_eks_pod_identity) && var.redis_kms_key_arn != null ? 1 : 0
 
   statement {
     sid    = "TfeIrsaAllowRedisKmsCmk"
@@ -346,7 +375,7 @@ data "aws_iam_policy_document" "tfe_irsa_redis_kms_cmk" {
 }
 
 data "aws_iam_policy_document" "tfe_irsa_combined" {
-  count = var.create_tfe_eks_irsa ? 1 : 0
+  count = (var.create_tfe_eks_irsa || var.create_tfe_eks_pod_identity) ? 1 : 0
 
   source_policy_documents = [
     var.tfe_object_storage_s3_use_instance_profile ? data.aws_iam_policy_document.tfe_irsa_s3[0].json : "",
@@ -358,7 +387,7 @@ data "aws_iam_policy_document" "tfe_irsa_combined" {
 }
 
 resource "aws_iam_policy" "tfe_irsa" {
-  count = var.create_tfe_eks_irsa ? 1 : 0
+  count = (var.create_tfe_eks_irsa || var.create_tfe_eks_pod_identity) ? 1 : 0
 
   name        = "${var.friendly_name_prefix}-tfe-eks-irsa-policy-${data.aws_region.current.name}"
   description = "Custom IAM policy used to map TFE IAM role to TFE Kubernetes Service Account."
@@ -370,6 +399,22 @@ resource "aws_iam_role_policy_attachment" "tfe_irsa" {
 
   role       = aws_iam_role.tfe_irsa[0].name
   policy_arn = aws_iam_policy.tfe_irsa[0].arn
+}
+
+resource "aws_iam_role_policy_attachment" "tfe_pi" {
+  count = var.create_tfe_eks_pod_identity ? 1 : 0
+
+  role       = aws_iam_role.tfe_pi[0].name
+  policy_arn = aws_iam_policy.tfe_irsa[0].arn
+}
+
+resource "aws_eks_pod_identity_association" "tfe_association" {
+  count = var.create_eks_cluster && var.create_tfe_eks_pod_identity ? 1 : 0
+
+  cluster_name    = aws_eks_cluster.tfe[0].name
+  namespace       = var.tfe_kube_namespace
+  service_account = var.tfe_kube_svc_account
+  role_arn        = aws_iam_role.tfe_pi[0].arn
 }
 
 #------------------------------------------------------------------------------
@@ -419,16 +464,46 @@ data "aws_iam_policy_document" "aws_lb_controller_irsa_assume_role" {
   }
 }
 
+#------------------------------------------------------------------------------
+# Pod Identity for LB controller
+#------------------------------------------------------------------------------
+resource "aws_iam_role" "aws_lb_pi" {
+  count = var.create_tfe_eks_pod_identity ? 1 : 0
+
+  name        = "${var.friendly_name_prefix}-aws-lb-controller-pi-role-${data.aws_region.current.name}"
+  path        = "/"
+  description = "IAM role for AWS Loead Balancer Controller Pod Identity."
+
+  assume_role_policy = data.aws_iam_policy_document.aws_lb_pi_assume_role[0].json
+
+}
+
+data "aws_iam_policy_document" "aws_lb_pi_assume_role" {
+  count = var.create_tfe_eks_pod_identity ? 1 : 0
+
+  statement {
+    sid     = "TfePiAssumeRole"
+    effect  = "Allow"
+    actions = ["sts:AssumeRole", "sts:TagSession"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["pods.eks.amazonaws.com"]
+    }
+  }
+}
+
 resource "aws_iam_policy" "aws_load_balancer_controller_policy" {
-  count = var.create_aws_lb_controller_irsa ? 1 : 0
+  count = (var.create_tfe_eks_irsa || var.create_tfe_eks_pod_identity) ? 1 : 0
 
   name        = "${var.friendly_name_prefix}-aws-lb-controller-policy"
   description = "IAM policy for AWS Load Balancer Controller."
   policy      = data.aws_iam_policy_document.aws_load_balancer_controller_policy[0].json
 }
 
+# Source: https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.13.0/docs/install/iam_policy.json
 data "aws_iam_policy_document" "aws_load_balancer_controller_policy" {
-  count = var.create_aws_lb_controller_irsa ? 1 : 0
+  count = (var.create_tfe_eks_irsa || var.create_tfe_eks_pod_identity) ? 1 : 0
 
   statement {
     effect = "Allow"
@@ -700,4 +775,20 @@ resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller_policy" 
 
   policy_arn = aws_iam_policy.aws_load_balancer_controller_policy[0].arn
   role       = aws_iam_role.aws_lb_controller_irsa[0].name
+}
+
+resource "aws_iam_role_policy_attachment" "aws_lb_pi_policy_attachment" {
+  count = var.create_tfe_eks_pod_identity ? 1 : 0
+
+  role       = aws_iam_role.aws_lb_pi[0].name
+  policy_arn = aws_iam_policy.tfe_irsa[0].arn
+}
+
+resource "aws_eks_pod_identity_association" "aws_lb_controller_association" {
+  count = var.create_eks_cluster && var.create_tfe_eks_pod_identity ? 1 : 0
+
+  cluster_name    = aws_eks_cluster.tfe[0].name
+  namespace       = "kube-system"
+  service_account = "aws-load-balancer-controller"
+  role_arn        = aws_iam_role.aws_lb_pi[0].arn
 }

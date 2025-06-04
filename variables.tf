@@ -205,6 +205,12 @@ variable "create_tfe_eks_pod_identity" {
   # }
 }
 
+variable "eks_pod_identity_addon_version" {
+  type        = string
+  description = "The version of the EKS Pod Identity Agent to use"
+  default     = null
+}
+
 variable "tfe_kube_namespace" {
   type        = string
   description = "Name of Kubernetes namespace for TFE service account (to be created by Helm chart). Used to configure EKS [IRSA](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html)."
