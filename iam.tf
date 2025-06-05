@@ -409,9 +409,9 @@ resource "aws_iam_role_policy_attachment" "tfe_pi" {
 }
 
 resource "aws_eks_pod_identity_association" "tfe_association" {
-  count = var.create_eks_cluster && var.create_tfe_eks_pod_identity ? 1 : 0
+  count = var.create_tfe_eks_pod_identity ? 1 : 0
 
-  cluster_name    = aws_eks_cluster.tfe[0].name
+  cluster_name    = var.create_eks_cluster ? aws_eks_cluster.tfe[0].name : var.existing_eks_cluster_name
   namespace       = var.tfe_kube_namespace
   service_account = var.tfe_kube_svc_account
   role_arn        = aws_iam_role.tfe_pi[0].arn
@@ -785,10 +785,10 @@ resource "aws_iam_role_policy_attachment" "aws_lb_pi_policy_attachment" {
 }
 
 resource "aws_eks_pod_identity_association" "aws_lb_controller_association" {
-  count = var.create_eks_cluster && var.create_tfe_eks_pod_identity ? 1 : 0
+  count = var.create_tfe_eks_pod_identity ? 1 : 0
 
-  cluster_name    = aws_eks_cluster.tfe[0].name
-  namespace       = "kube-system"
-  service_account = "aws-load-balancer-controller"
+  cluster_name    = var.create_eks_cluster ? aws_eks_cluster.tfe[0].name : var.existing_eks_cluster_name
+  namespace       = var.aws_lb_controller_kube_namespace
+  service_account = var.aws_lb_controller_kube_svc_account
   role_arn        = aws_iam_role.aws_lb_pi[0].arn
 }

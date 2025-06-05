@@ -82,7 +82,6 @@ run "pod_identity_conflicts_with_irsa" {
 
   expect_failures = [
     var.create_tfe_eks_irsa,
-    # var.create_tfe_eks_pod_identity
   ]
 }
 
@@ -138,29 +137,43 @@ run "no_pod_identity_option_creates_addon" {
   }
 }
 
-# run "aws_false_success" {
-#   command = plan
+run "pod_identity_option_creates_addon_with_version" {
+  command = plan
 
-#   variables {
-#     configure_aws = false
-#   }
+  variables {
+    eks_pod_identity_addon_version = "v1.3.5-eksbuild.2"
+  }
 
-#   assert {
-#     condition     = length(vault_aws_secret_backend.aws) == 0
-#     error_message = "AWS Secret Backend created when not expected"
-#   }
-# }
+  assert {
+    condition     = aws_eks_addon.pod_identity[0].addon_version == "v1.3.5-eksbuild.2"
+    error_message = "Pod Identity addon version incorrect."
+  }
+}
 
-# run "aws_true_success" {
-#   command = plan
+run "pod_identity_with_no_cluster_fails" {
+  command = plan
 
-#   variables {
-#     configure_aws                 = true
-#     initial_aws_access_key_id     = "AKIAXQY5RIOOOOOO"
-#     initial_aws_secret_access_key = "aoeu1234"
-#   }
-#   assert {
-#     condition     = length(vault_aws_secret_backend.aws) == 1
-#     error_message = "AWS Secret Backend not created when expected"
-#   }
-# }
+  variables {
+    create_tfe_eks_pod_identity = true
+    create_eks_cluster          = false
+  }
+
+  expect_failures = [
+    var.create_tfe_eks_pod_identity
+  ]
+}
+
+run "pod_identity_with_existing_cluster" {
+  command = plan
+
+  variables {
+    create_tfe_eks_pod_identity = true
+    create_eks_cluster          = false
+    existing_eks_cluster_name   = "existing-eks-cluster"
+  }
+
+  assert {
+    condition     = length(aws_eks_pod_identity_association.tfe_association) == 1
+    error_message = "Pod Identity association for TFE not created for existing cluster."
+  }
+}

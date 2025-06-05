@@ -199,15 +199,27 @@ variable "create_tfe_eks_pod_identity" {
   type        = bool
   description = "Boolean to create TFE IAM role and policies with the EKS addon to enable TFE EKS IAM role using Pod Identity."
   default     = false
+
+  validation {
+    condition     = var.create_tfe_eks_pod_identity ? var.create_eks_cluster || (var.existing_eks_cluster_name != null && var.existing_eks_cluster_name != "") : true
+    error_message = "This is an error message"
+  }
+}
+
+variable "existing_eks_cluster_name" {
+  type        = string
+  description = "Name of existing EKS cluster, which will receive Pod Identity addon. Required when `create_eks_cluster` is `false` and `create_tfe_eks_pod_identity` is true."
+  default     = null
+
   # validation {
-  #   condition     = !(var.create_tfe_eks_irsa && var.create_tfe_eks_pod_identity)
-  #   error_message = "Only one of create_tfe_eks_pod_identity or create_tfe_eks_irsa is allowed."
+  #   condition     = var.create_tfe_eks_pod_identity && !var.create_eks_cluster ? var.existing_eks_cluster_name != null && var.existing_eks_cluster_name != "" : true
+  #   error_message = "Value of existing EKS cluster is required when `create_eks_cluster` is `false` and `create_tfe_eks_pod_identity` is true."
   # }
 }
 
 variable "eks_pod_identity_addon_version" {
   type        = string
-  description = "The version of the EKS Pod Identity Agent to use"
+  description = "The version of the EKS Pod Identity Agent to use. Defaults to latest."
   default     = null
 }
 
@@ -258,7 +270,7 @@ variable "create_eks_cluster" {
 
 variable "eks_cluster_name" {
   type        = string
-  description = "Name of EKS cluster."
+  description = "Name of EKS cluster. Will be prefixed by `var.friendly_name_prefix`"
   default     = "tfe-eks-cluster"
 }
 
