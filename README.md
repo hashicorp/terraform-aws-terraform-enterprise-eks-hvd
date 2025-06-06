@@ -152,7 +152,7 @@ One of the following logging destinations:
 
    >📝 Note: You can get the value of your AWS load balancer controller IRSA role ARN from the `aws_lb_controller_irsa_role_arn` Terraform output (if `create_aws_lb_controller_irsa` was `true`).
 
-   >📝 Note: If you chose EKS Pod Identity, omit the `--set serviceACcount.annotations` option.
+   >📝 Note: If you chose EKS Pod Identity, omit the `--set serviceAccount.annotations` option.
 
 
 9. Create the Kubernetes namespace for TFE:
