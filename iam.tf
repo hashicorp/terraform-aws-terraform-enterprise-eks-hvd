@@ -186,6 +186,10 @@ resource "aws_iam_role_policy_attachment" "tfe_eks_nodegroup_ebs_kms" {
 #   role = aws_iam_role.eks_nodegroup.name
 # }
 
+locals {
+  workload_identity_type = var.create_tfe_eks_irsa ? "Irsa" : (var.create_tfe_eks_pod_identity ? "PodIdentity" : null)
+}
+
 #------------------------------------------------------------------------------
 # IAM role for service account (IRSA) setup
 #------------------------------------------------------------------------------
@@ -288,11 +292,11 @@ data "aws_iam_policy_document" "tfe_pi_assume_role" {
   }
 }
 
-data "aws_iam_policy_document" "tfe_irsa_s3" {
+data "aws_iam_policy_document" "tfe_workload_identity_s3" {
   count = (var.create_tfe_eks_irsa || var.create_tfe_eks_pod_identity) && var.tfe_object_storage_s3_use_instance_profile ? 1 : 0
 
   statement {
-    sid    = "TfeIrsaAllowS3"
+    sid    = "Tfe${local.workload_identity_type}AllowS3"
     effect = "Allow"
     actions = [
       "s3:PutObject",
@@ -308,11 +312,11 @@ data "aws_iam_policy_document" "tfe_irsa_s3" {
   }
 }
 
-data "aws_iam_policy_document" "tfe_irsa_cost_estimation" {
+data "aws_iam_policy_document" "tfe_workload_identity_cost_estimation" {
   count = (var.create_tfe_eks_irsa || var.create_tfe_eks_pod_identity) && var.tfe_cost_estimation_iam_enabled ? 1 : 0
 
   statement {
-    sid    = "TfeIrsaAllowCostEstimation"
+    sid    = "Tfe${local.workload_identity_type}AllowCostEstimation"
     effect = "Allow"
     actions = [
       "pricing:DescribeServices",
@@ -323,11 +327,11 @@ data "aws_iam_policy_document" "tfe_irsa_cost_estimation" {
   }
 }
 
-data "aws_iam_policy_document" "tfe_irsa_rds_kms_cmk" {
+data "aws_iam_policy_document" "tfe_workload_identity_rds_kms_cmk" {
   count = (var.create_tfe_eks_irsa || var.create_tfe_eks_pod_identity) && var.rds_kms_key_arn != null ? 1 : 0
 
   statement {
-    sid    = "TfeIrsaAllowRdsKmsCmk"
+    sid    = "Tfe${local.workload_identity_type}AllowRdsKmsCmk"
     effect = "Allow"
     actions = [
       "kms:Decrypt",
@@ -340,11 +344,11 @@ data "aws_iam_policy_document" "tfe_irsa_rds_kms_cmk" {
   }
 }
 
-data "aws_iam_policy_document" "tfe_irsa_s3_kms_cmk" {
+data "aws_iam_policy_document" "tfe_workload_identity_s3_kms_cmk" {
   count = (var.create_tfe_eks_irsa || var.create_tfe_eks_pod_identity) && var.rds_kms_key_arn != null ? 1 : 0
 
   statement {
-    sid    = "TfeIrsaAllowS3KmsCmk"
+    sid    = "Tfe${local.workload_identity_type}AllowS3KmsCmk"
     effect = "Allow"
     actions = [
       "kms:Decrypt",
@@ -357,11 +361,11 @@ data "aws_iam_policy_document" "tfe_irsa_s3_kms_cmk" {
   }
 }
 
-data "aws_iam_policy_document" "tfe_irsa_redis_kms_cmk" {
+data "aws_iam_policy_document" "tfe_workload_identity_redis_kms_cmk" {
   count = (var.create_tfe_eks_irsa || var.create_tfe_eks_pod_identity) && var.redis_kms_key_arn != null ? 1 : 0
 
   statement {
-    sid    = "TfeIrsaAllowRedisKmsCmk"
+    sid    = "Tfe${local.workload_identity_type}AllowRedisKmsCmk"
     effect = "Allow"
     actions = [
       "kms:Decrypt",
@@ -374,38 +378,38 @@ data "aws_iam_policy_document" "tfe_irsa_redis_kms_cmk" {
   }
 }
 
-data "aws_iam_policy_document" "tfe_irsa_combined" {
+data "aws_iam_policy_document" "tfe_workload_identity_combined" {
   count = (var.create_tfe_eks_irsa || var.create_tfe_eks_pod_identity) ? 1 : 0
 
   source_policy_documents = [
-    var.tfe_object_storage_s3_use_instance_profile ? data.aws_iam_policy_document.tfe_irsa_s3[0].json : "",
-    var.tfe_cost_estimation_iam_enabled ? data.aws_iam_policy_document.tfe_irsa_cost_estimation[0].json : "",
-    var.rds_kms_key_arn != null ? data.aws_iam_policy_document.tfe_irsa_rds_kms_cmk[0].json : "",
-    var.s3_kms_key_arn != null ? data.aws_iam_policy_document.tfe_irsa_s3_kms_cmk[0].json : "",
-    var.redis_kms_key_arn != null ? data.aws_iam_policy_document.tfe_irsa_redis_kms_cmk[0].json : ""
+    var.tfe_object_storage_s3_use_instance_profile ? data.aws_iam_policy_document.tfe_workload_identity_s3[0].json : "",
+    var.tfe_cost_estimation_iam_enabled ? data.aws_iam_policy_document.tfe_workload_identity_cost_estimation[0].json : "",
+    var.rds_kms_key_arn != null ? data.aws_iam_policy_document.tfe_workload_identity_rds_kms_cmk[0].json : "",
+    var.s3_kms_key_arn != null ? data.aws_iam_policy_document.tfe_workload_identity_s3_kms_cmk[0].json : "",
+    var.redis_kms_key_arn != null ? data.aws_iam_policy_document.tfe_workload_identity_redis_kms_cmk[0].json : ""
   ]
 }
 
-resource "aws_iam_policy" "tfe_irsa" {
+resource "aws_iam_policy" "tfe_workload_identity" {
   count = (var.create_tfe_eks_irsa || var.create_tfe_eks_pod_identity) ? 1 : 0
 
   name        = "${var.friendly_name_prefix}-tfe-eks-irsa-policy-${data.aws_region.current.name}"
   description = "Custom IAM policy used to map TFE IAM role to TFE Kubernetes Service Account."
-  policy      = data.aws_iam_policy_document.tfe_irsa_combined[0].json
+  policy      = data.aws_iam_policy_document.tfe_workload_identity_combined[0].json
 }
 
 resource "aws_iam_role_policy_attachment" "tfe_irsa" {
   count = var.create_tfe_eks_irsa ? 1 : 0
 
   role       = aws_iam_role.tfe_irsa[0].name
-  policy_arn = aws_iam_policy.tfe_irsa[0].arn
+  policy_arn = aws_iam_policy.tfe_workload_identity[0].arn
 }
 
 resource "aws_iam_role_policy_attachment" "tfe_pi" {
   count = var.create_tfe_eks_pod_identity ? 1 : 0
 
   role       = aws_iam_role.tfe_pi[0].name
-  policy_arn = aws_iam_policy.tfe_irsa[0].arn
+  policy_arn = aws_iam_policy.tfe_workload_identity[0].arn
 }
 
 resource "aws_eks_pod_identity_association" "tfe_association" {
