@@ -43,17 +43,20 @@ EOF
   }
 }
 
+# These are the default variables for all test runs
+# Individual run blocks can override them
 variables {
-  create_eks_cluster               = true
-  create_tfe_eks_pod_identity      = true
-  friendly_name_prefix             = "primary"
-  tfe_fqdn                         = "tfe.tyler-durden.sbx.hashidemos.io"
-  vpc_id                           = "vpc-1234"
-  rds_subnet_ids                   = ["subnet-1234", "subnet-56789"]
-  tfe_database_password_secret_arn = "arn:aws:secretsmanager:us-west-2:12345678:secret:primary-tfe-database-password-a69a-cHdzKn"
-  tfe_redis_password_secret_arn    = "arn:aws:secretsmanager:us-west-2:12345678:secret:primary-tfe-redis-password-a69a-cHdzKn"
-  redis_subnet_ids                 = ["subnet-1234", "subnet-56789"]
-  eks_subnet_ids                   = ["subnet-1234", "subnet-56789"]
+  create_eks_cluster                    = true
+  create_tfe_eks_pod_identity           = true
+  create_aws_lb_controller_pod_identity = true
+  friendly_name_prefix                  = "primary"
+  tfe_fqdn                              = "tfe.tyler-durden.sbx.hashidemos.io"
+  vpc_id                                = "vpc-1234"
+  rds_subnet_ids                        = ["subnet-1234", "subnet-56789"]
+  tfe_database_password_secret_arn      = "arn:aws:secretsmanager:us-west-2:12345678:secret:primary-tfe-database-password-a69a-cHdzKn"
+  tfe_redis_password_secret_arn         = "arn:aws:secretsmanager:us-west-2:12345678:secret:primary-tfe-redis-password-a69a-cHdzKn"
+  redis_subnet_ids                      = ["subnet-1234", "subnet-56789"]
+  eks_subnet_ids                        = ["subnet-1234", "subnet-56789"]
 }
 
 run "irsa_requires_oidc_provider" {
@@ -72,12 +75,12 @@ run "irsa_requires_oidc_provider" {
   ]
 }
 
-run "pod_identity_conflicts_with_irsa" {
+run "tfe_pod_identity_conflicts_with_irsa" {
   command = plan
 
   variables {
-    create_tfe_eks_irsa      = true
     create_eks_oidc_provider = true
+    create_tfe_eks_irsa      = true
   }
 
   expect_failures = [
@@ -85,7 +88,20 @@ run "pod_identity_conflicts_with_irsa" {
   ]
 }
 
-run "pod_identity_option_creates_addon" {
+run "lb_controller_pod_identity_conflicts_with_irsa" {
+  command = plan
+
+  variables {
+    create_eks_oidc_provider      = true
+    create_aws_lb_controller_irsa = true
+  }
+
+  expect_failures = [
+    var.create_aws_lb_controller_irsa,
+  ]
+}
+
+run "pod_identity_options_creates_addon_and_iam" {
   command = plan
 
   assert {
@@ -105,15 +121,77 @@ run "pod_identity_option_creates_addon" {
 
   assert {
     condition     = length(aws_iam_role.tfe_pi) == 1
-    error_message = "IAM Role for Pod Identity not created when expected."
+    error_message = "IAM Role for TFE Pod Identity not created when expected."
+  }
+
+  assert {
+    condition     = length(aws_iam_role.aws_lb_pi) == 1
+    error_message = "IAM Role for LB Controller Pod Identity not created when expected."
   }
 }
 
-run "no_pod_identity_option_creates_addon" {
+run "no_tfe_pod_identity_option_no_addon" {
   command = plan
 
   variables {
     create_tfe_eks_pod_identity = false
+  }
+
+  assert {
+    condition     = length(aws_eks_pod_identity_association.tfe_association) == 0
+    error_message = "Pod Identity association for TFE created when not expected."
+  }
+
+  assert {
+    condition     = length(aws_iam_role.tfe_pi) == 0
+    error_message = "IAM Role for Pod Identity created when not expected."
+  }
+
+  assert {
+    condition     = length(aws_eks_pod_identity_association.aws_lb_controller_association) == 1
+    error_message = "Pod Identity association for LB controller not created when expected."
+  }
+
+  assert {
+    condition     = length(aws_iam_role.aws_lb_pi) == 1
+    error_message = "IAM Role for LB Controller Pod Identity not created when expected."
+  }
+}
+
+run "no_lb_pod_identity_option_no_addon" {
+  command = plan
+
+  variables {
+    create_aws_lb_controller_pod_identity = false
+  }
+
+  assert {
+    condition     = length(aws_eks_pod_identity_association.aws_lb_controller_association) == 0
+    error_message = "Pod Identity association for LB controller created when not expected."
+  }
+
+  assert {
+    condition     = length(aws_iam_role.aws_lb_pi) == 0
+    error_message = "IAM Role for LB Controller Pod Identity created when not expected."
+  }
+
+  assert {
+    condition     = length(aws_eks_pod_identity_association.tfe_association) == 1
+    error_message = "Pod Identity association for TFE not created when expected."
+  }
+
+  assert {
+    condition     = length(aws_iam_role.tfe_pi) == 1
+    error_message = "IAM Role for TFE Pod Identity not created when not expected."
+  }
+}
+
+run "no_pod_identity_all_no_addon_no_iam" {
+  command = plan
+
+  variables {
+    create_aws_lb_controller_pod_identity = false
+    create_tfe_eks_pod_identity           = false
   }
 
   assert {
@@ -127,13 +205,18 @@ run "no_pod_identity_option_creates_addon" {
   }
 
   assert {
-    condition     = length(aws_eks_pod_identity_association.aws_lb_controller_association) == 0
-    error_message = "Pod Identity association for LB controller when not expected."
+    condition     = length(aws_iam_role.tfe_pi) == 0
+    error_message = "IAM Role for TFE Pod Identity created when not expected."
   }
 
   assert {
-    condition     = length(aws_iam_role.tfe_pi) == 0
-    error_message = "IAM Role for Pod Identity created when not expected."
+    condition     = length(aws_eks_pod_identity_association.aws_lb_controller_association) == 0
+    error_message = "Pod Identity association for LB controller created when not expected."
+  }
+
+  assert {
+    condition     = length(aws_iam_role.aws_lb_pi) == 0
+    error_message = "IAM Role for LB Controller Pod Identity created when not expected."
   }
 }
 
@@ -159,7 +242,8 @@ run "pod_identity_with_no_cluster_fails" {
   }
 
   expect_failures = [
-    var.create_tfe_eks_pod_identity
+    var.create_tfe_eks_pod_identity,
+    var.create_aws_lb_controller_pod_identity
   ]
 }
 
@@ -175,5 +259,10 @@ run "pod_identity_with_existing_cluster" {
   assert {
     condition     = length(aws_eks_pod_identity_association.tfe_association) == 1
     error_message = "Pod Identity association for TFE not created for existing cluster."
+  }
+
+  assert {
+    condition     = length(aws_eks_addon.pod_identity) == 1
+    error_message = "Pod Identity addon not created on existing cluster when expected."
   }
 }

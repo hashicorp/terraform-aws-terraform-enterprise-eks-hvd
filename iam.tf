@@ -472,7 +472,7 @@ data "aws_iam_policy_document" "aws_lb_controller_irsa_assume_role" {
 # Pod Identity for LB controller
 #------------------------------------------------------------------------------
 resource "aws_iam_role" "aws_lb_pi" {
-  count = var.create_tfe_eks_pod_identity ? 1 : 0
+  count = var.create_aws_lb_controller_pod_identity ? 1 : 0
 
   name        = "${var.friendly_name_prefix}-aws-lb-controller-pi-role-${data.aws_region.current.name}"
   path        = "/"
@@ -483,7 +483,7 @@ resource "aws_iam_role" "aws_lb_pi" {
 }
 
 data "aws_iam_policy_document" "aws_lb_pi_assume_role" {
-  count = var.create_tfe_eks_pod_identity ? 1 : 0
+  count = var.create_aws_lb_controller_pod_identity ? 1 : 0
 
   statement {
     sid     = "TfePiAssumeRole"
@@ -498,7 +498,7 @@ data "aws_iam_policy_document" "aws_lb_pi_assume_role" {
 }
 
 resource "aws_iam_policy" "aws_load_balancer_controller_policy" {
-  count = (var.create_tfe_eks_irsa || var.create_tfe_eks_pod_identity) ? 1 : 0
+  count = (var.create_aws_lb_controller_irsa || var.create_aws_lb_controller_pod_identity) ? 1 : 0
 
   name        = "${var.friendly_name_prefix}-aws-lb-controller-policy"
   description = "IAM policy for AWS Load Balancer Controller."
@@ -507,7 +507,7 @@ resource "aws_iam_policy" "aws_load_balancer_controller_policy" {
 
 # Source: https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.13.0/docs/install/iam_policy.json
 data "aws_iam_policy_document" "aws_load_balancer_controller_policy" {
-  count = (var.create_tfe_eks_irsa || var.create_tfe_eks_pod_identity) ? 1 : 0
+  count = (var.create_aws_lb_controller_irsa || var.create_aws_lb_controller_pod_identity) ? 1 : 0
 
   statement {
     effect = "Allow"
@@ -782,14 +782,14 @@ resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller_policy" 
 }
 
 resource "aws_iam_role_policy_attachment" "aws_lb_pi_policy_attachment" {
-  count = var.create_tfe_eks_pod_identity ? 1 : 0
+  count = var.create_aws_lb_controller_pod_identity ? 1 : 0
 
   role       = aws_iam_role.aws_lb_pi[0].name
   policy_arn = aws_iam_policy.aws_load_balancer_controller_policy[0].arn
 }
 
 resource "aws_eks_pod_identity_association" "aws_lb_controller_association" {
-  count = var.create_tfe_eks_pod_identity ? 1 : 0
+  count = var.create_aws_lb_controller_pod_identity ? 1 : 0
 
   cluster_name    = var.create_eks_cluster ? aws_eks_cluster.tfe[0].name : var.existing_eks_cluster_name
   namespace       = var.aws_lb_controller_kube_namespace

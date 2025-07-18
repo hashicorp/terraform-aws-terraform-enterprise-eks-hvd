@@ -202,7 +202,7 @@ variable "create_tfe_eks_pod_identity" {
 
   validation {
     condition     = var.create_tfe_eks_pod_identity ? var.create_eks_cluster || (var.existing_eks_cluster_name != null && var.existing_eks_cluster_name != "") : true
-    error_message = "This is an error message"
+    error_message = "Pod Identity for TFE requires either creating a new EKS cluster or providing an existing EKS cluster name."
   }
 }
 
@@ -239,6 +239,22 @@ variable "create_aws_lb_controller_irsa" {
   type        = bool
   description = "Boolean to create AWS Load Balancer Controller IAM role and policies to enable EKS IAM role for service accounts (IRSA)."
   default     = false
+
+  validation {
+    condition     = !(var.create_aws_lb_controller_irsa && var.create_aws_lb_controller_pod_identity)
+    error_message = "Only one of create_aws_lb_controller_pod_identity or create_aws_lb_controller_irsa is allowed."
+  }
+}
+
+variable "create_aws_lb_controller_pod_identity" {
+  type        = bool
+  description = "Boolean to create AWS Load Balancer Controller IAM role and policies with the EKS addon to enable AWS LB Controller EKS IAM role using Pod Identity."
+  default     = false
+
+  validation {
+    condition     = var.create_aws_lb_controller_pod_identity ? var.create_eks_cluster || (var.existing_eks_cluster_name != null && var.existing_eks_cluster_name != "") : true
+    error_message = "Pod Identity for AWS LB Controller requires either creating a new EKS cluster or providing an existing EKS cluster name."
+  }
 }
 
 variable "aws_lb_controller_kube_namespace" {
