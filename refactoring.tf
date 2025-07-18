@@ -1,3 +1,6 @@
+# Resource name changes from:
+# https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/pull/22/
+
 moved {
   from = data.aws_iam_policy_document.tfe_irsa_s3
   to   = data.aws_iam_policy_document.tfe_workload_identity_s3
