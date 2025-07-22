@@ -216,11 +216,6 @@ variable "existing_eks_cluster_name" {
   type        = string
   description = "Name of existing EKS cluster, which will receive Pod Identity addon. Required when `create_eks_cluster` is `false` and `create_tfe_eks_pod_identity` is true."
   default     = null
-
-  # validation {
-  #   condition     = var.create_tfe_eks_pod_identity && !var.create_eks_cluster ? var.existing_eks_cluster_name != null && var.existing_eks_cluster_name != "" : true
-  #   error_message = "Value of existing EKS cluster is required when `create_eks_cluster` is `false` and `create_tfe_eks_pod_identity` is true."
-  # }
 }
 
 variable "eks_pod_identity_addon_version" {
@@ -292,7 +287,7 @@ variable "create_eks_cluster" {
 
 variable "eks_cluster_name" {
   type        = string
-  description = "Name of EKS cluster. Will be prefixed by `var.friendly_name_prefix`"
+  description = "Name of created EKS cluster. Will be prefixed by `var.friendly_name_prefix`"
   default     = "tfe-eks-cluster"
 }
 
