@@ -271,21 +271,27 @@ Below are links to various docs related to the customization and management of y
 | [aws_db_subnet_group.tfe](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_subnet_group) | resource |
 | [aws_eks_access_entry.tfe_cluster_creator](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_access_entry) | resource |
 | [aws_eks_access_policy_association.tfe_cluster_creator](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_access_policy_association) | resource |
+| [aws_eks_addon.pod_identity](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_addon) | resource |
 | [aws_eks_cluster.tfe](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster) | resource |
 | [aws_eks_node_group.tfe](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_node_group) | resource |
+| [aws_eks_pod_identity_association.aws_lb_controller_association](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_pod_identity_association) | resource |
+| [aws_eks_pod_identity_association.tfe_association](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_pod_identity_association) | resource |
 | [aws_elasticache_replication_group.redis_cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticache_replication_group) | resource |
 | [aws_elasticache_subnet_group.tfe](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticache_subnet_group) | resource |
 | [aws_iam_openid_connect_provider.tfe_eks_irsa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_openid_connect_provider) | resource |
 | [aws_iam_policy.aws_load_balancer_controller_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.s3_crr](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.tfe_eks_nodegroup_custom](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
-| [aws_iam_policy.tfe_irsa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.tfe_workload_identity](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy_attachment.s3_crr](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy_attachment) | resource |
 | [aws_iam_role.aws_lb_controller_irsa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role.aws_lb_pi](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.eks_cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.s3_crr](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.tfe_eks_nodegroup](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.tfe_irsa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role.tfe_pi](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role_policy_attachment.aws_lb_pi_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.aws_load_balancer_controller_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.eks_cluster_cluster_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.eks_cluster_service_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
@@ -295,6 +301,7 @@ Below are links to various docs related to the customization and management of y
 | [aws_iam_role_policy_attachment.tfe_eks_nodegroup_ebs_kms](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.tfe_eks_nodegroup_worker_node_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.tfe_irsa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.tfe_pi](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_launch_template.tfe_eks_nodegroup](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_template) | resource |
 | [aws_rds_cluster.tfe](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster) | resource |
 | [aws_rds_cluster_instance.tfe](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster_instance) | resource |
@@ -343,6 +350,7 @@ Below are links to various docs related to the customization and management of y
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.aws_lb_controller_irsa_assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.aws_lb_pi_assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.aws_load_balancer_controller_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.eks_cluster_assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.s3_crr](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
@@ -350,12 +358,13 @@ Below are links to various docs related to the customization and management of y
 | [aws_iam_policy_document.tfe_eks_nodegroup_assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.tfe_eks_nodegroup_ebs_kms_cmk](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.tfe_irsa_assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.tfe_irsa_combined](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.tfe_irsa_cost_estimation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.tfe_irsa_rds_kms_cmk](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.tfe_irsa_redis_kms_cmk](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.tfe_irsa_s3](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.tfe_irsa_s3_kms_cmk](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.tfe_pi_assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.tfe_workload_identity_combined](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.tfe_workload_identity_cost_estimation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.tfe_workload_identity_rds_kms_cmk](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.tfe_workload_identity_redis_kms_cmk](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.tfe_workload_identity_s3](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.tfe_workload_identity_s3_kms_cmk](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_session_context.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_session_context) | data source |
 | [aws_partition.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/partition) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
@@ -369,8 +378,10 @@ Below are links to various docs related to the customization and management of y
 |------|-------------|------|---------|:--------:|
 | <a name="input_friendly_name_prefix"></a> [friendly\_name\_prefix](#input\_friendly\_name\_prefix) | Friendly name prefix used for uniquely naming all AWS resources for this deployment. Most commonly set to either an environment (e.g. 'sandbox', 'prod') a team name, or a project name. | `string` | n/a | yes |
 | <a name="input_rds_subnet_ids"></a> [rds\_subnet\_ids](#input\_rds\_subnet\_ids) | List of subnet IDs to use for RDS database subnet group. | `list(string)` | n/a | yes |
+| <a name="input_redis_subnet_ids"></a> [redis\_subnet\_ids](#input\_redis\_subnet\_ids) | List of subnet IDs to use for Redis cluster subnet group. | `list(string)` | n/a | yes |
 | <a name="input_tfe_database_password_secret_arn"></a> [tfe\_database\_password\_secret\_arn](#input\_tfe\_database\_password\_secret\_arn) | ARN of AWS Secrets Manager secret for the TFE RDS Aurora (PostgreSQL) database password. | `string` | n/a | yes |
 | <a name="input_tfe_fqdn"></a> [tfe\_fqdn](#input\_tfe\_fqdn) | Fully qualified domain name (FQDN) of TFE instance. This name should eventually resolve to the TFE load balancer DNS name or IP address and will be what clients use to access TFE. | `string` | n/a | yes |
+| <a name="input_tfe_redis_password_secret_arn"></a> [tfe\_redis\_password\_secret\_arn](#input\_tfe\_redis\_password\_secret\_arn) | ARN of AWS Secrets Manager secret for the TFE Redis password. Value of secret must contain from 16 to 128 alphanumeric characters or symbols (excluding @, ", and /). | `string` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | ID of VPC where TFE will be deployed. | `string` | n/a | yes |
 | <a name="input_aws_lb_controller_kube_namespace"></a> [aws\_lb\_controller\_kube\_namespace](#input\_aws\_lb\_controller\_kube\_namespace) | Name of Kubernetes namespace for AWS Load Balancer Controller service account (to be created by Helm chart). Used to configure EKS [IRSA](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html). | `string` | `"kube-system"` | no |
 | <a name="input_aws_lb_controller_kube_svc_account"></a> [aws\_lb\_controller\_kube\_svc\_account](#input\_aws\_lb\_controller\_kube\_svc\_account) | Name of Kubernetes service account for AWS Load Balancer Controller (to be created by Helm chart). Used to configure EKS [IRSA](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html). | `string` | `"aws-load-balancer-controller"` | no |
@@ -382,14 +393,16 @@ Below are links to various docs related to the customization and management of y
 | <a name="input_cidr_allow_ingress_to_redis"></a> [cidr\_allow\_ingress\_to\_redis](#input\_cidr\_allow\_ingress\_to\_redis) | List of CIDR ranges to allow TCP/6379 (Redis) inbound to Redis cluster. | `list(string)` | `null` | no |
 | <a name="input_common_tags"></a> [common\_tags](#input\_common\_tags) | Map of common tags for all taggable AWS resources. | `map(string)` | `{}` | no |
 | <a name="input_create_aws_lb_controller_irsa"></a> [create\_aws\_lb\_controller\_irsa](#input\_create\_aws\_lb\_controller\_irsa) | Boolean to create AWS Load Balancer Controller IAM role and policies to enable EKS IAM role for service accounts (IRSA). | `bool` | `false` | no |
+| <a name="input_create_aws_lb_controller_pod_identity"></a> [create\_aws\_lb\_controller\_pod\_identity](#input\_create\_aws\_lb\_controller\_pod\_identity) | Boolean to create AWS Load Balancer Controller IAM role and policies with the EKS addon to enable AWS LB Controller EKS IAM role using Pod Identity. | `bool` | `false` | no |
 | <a name="input_create_eks_cluster"></a> [create\_eks\_cluster](#input\_create\_eks\_cluster) | Boolean to create new EKS cluster for TFE. | `bool` | `false` | no |
 | <a name="input_create_eks_oidc_provider"></a> [create\_eks\_oidc\_provider](#input\_create\_eks\_oidc\_provider) | Boolean to create OIDC provider used to configure AWS IRSA. | `bool` | `false` | no |
 | <a name="input_create_helm_overrides_file"></a> [create\_helm\_overrides\_file](#input\_create\_helm\_overrides\_file) | Boolean to generate a YAML file from template with Helm overrides values for TFE deployment. | `bool` | `true` | no |
 | <a name="input_create_tfe_eks_irsa"></a> [create\_tfe\_eks\_irsa](#input\_create\_tfe\_eks\_irsa) | Boolean to create TFE IAM role and policies to enable TFE EKS IAM role for service accounts (IRSA). | `bool` | `false` | no |
+| <a name="input_create_tfe_eks_pod_identity"></a> [create\_tfe\_eks\_pod\_identity](#input\_create\_tfe\_eks\_pod\_identity) | Boolean to create TFE IAM role and policies with the EKS addon to enable TFE EKS IAM role using Pod Identity. | `bool` | `false` | no |
 | <a name="input_create_tfe_lb_security_group"></a> [create\_tfe\_lb\_security\_group](#input\_create\_tfe\_lb\_security\_group) | Boolean to create security group for TFE load balancer (load balancer is managed by Helm/K8s). | `bool` | `true` | no |
 | <a name="input_eks_cluster_authentication_mode"></a> [eks\_cluster\_authentication\_mode](#input\_eks\_cluster\_authentication\_mode) | Authentication mode for access config of EKS cluster. | `string` | `"API_AND_CONFIG_MAP"` | no |
 | <a name="input_eks_cluster_endpoint_public_access"></a> [eks\_cluster\_endpoint\_public\_access](#input\_eks\_cluster\_endpoint\_public\_access) | Boolean to enable public access to the EKS cluster endpoint. | `bool` | `false` | no |
-| <a name="input_eks_cluster_name"></a> [eks\_cluster\_name](#input\_eks\_cluster\_name) | Name of EKS cluster. | `string` | `"tfe-eks-cluster"` | no |
+| <a name="input_eks_cluster_name"></a> [eks\_cluster\_name](#input\_eks\_cluster\_name) | Name of created EKS cluster. Will be prefixed by `var.friendly_name_prefix` | `string` | `"tfe-eks-cluster"` | no |
 | <a name="input_eks_cluster_public_access_cidrs"></a> [eks\_cluster\_public\_access\_cidrs](#input\_eks\_cluster\_public\_access\_cidrs) | List of CIDR blocks to allow public access to the EKS cluster endpoint. Only valid when `eks_cluster_endpoint_public_access` is `true`. | `list(string)` | `null` | no |
 | <a name="input_eks_cluster_service_ipv4_cidr"></a> [eks\_cluster\_service\_ipv4\_cidr](#input\_eks\_cluster\_service\_ipv4\_cidr) | CIDR block for the EKS cluster Kubernetes service network. Must be a valid /16 CIDR block. EKS will auto-assign from either 10.100.0.0/16 or 172.20.0.0/16 CIDR blocks when `null`. | `string` | `null` | no |
 | <a name="input_eks_nodegroup_ami_id"></a> [eks\_nodegroup\_ami\_id](#input\_eks\_nodegroup\_ami\_id) | ID of AMI to use for EKS node group. Required when `eks_nodegroup_ami_type` is `CUSTOM`. | `string` | `null` | no |
@@ -400,7 +413,10 @@ Below are links to various docs related to the customization and management of y
 | <a name="input_eks_nodegroup_scaling_config"></a> [eks\_nodegroup\_scaling\_config](#input\_eks\_nodegroup\_scaling\_config) | Scaling configuration for EKS node group. | `map(number)` | <pre>{<br/>  "desired_size": 3,<br/>  "max_size": 3,<br/>  "min_size": 2<br/>}</pre> | no |
 | <a name="input_eks_oidc_provider_arn"></a> [eks\_oidc\_provider\_arn](#input\_eks\_oidc\_provider\_arn) | ARN of existing OIDC provider for EKS cluster. Required when `create_eks_oidc_provider` is `false`. | `string` | `null` | no |
 | <a name="input_eks_oidc_provider_url"></a> [eks\_oidc\_provider\_url](#input\_eks\_oidc\_provider\_url) | URL of existing OIDC provider for EKS cluster. Required when `create_eks_oidc_provider` is `false`. | `string` | `null` | no |
+| <a name="input_eks_pod_identity_addon_version"></a> [eks\_pod\_identity\_addon\_version](#input\_eks\_pod\_identity\_addon\_version) | The version of the EKS Pod Identity Agent to use. Defaults to latest. | `string` | `null` | no |
 | <a name="input_eks_subnet_ids"></a> [eks\_subnet\_ids](#input\_eks\_subnet\_ids) | List of subnet IDs to use for EKS cluster. | `list(string)` | `null` | no |
+| <a name="input_existing_eks_cluster_name"></a> [existing\_eks\_cluster\_name](#input\_existing\_eks\_cluster\_name) | Name of existing EKS cluster, which will receive Pod Identity addon. Required when `create_eks_cluster` is `false` and `create_tfe_eks_pod_identity` is true. | `string` | `null` | no |
+| <a name="input_force_destroy_s3_bucket"></a> [force\_destroy\_s3\_bucket](#input\_force\_destroy\_s3\_bucket) | ability to detroy the s3 bucket if needed | `bool` | `false` | no |
 | <a name="input_is_secondary_region"></a> [is\_secondary\_region](#input\_is\_secondary\_region) | Boolean indicating whether this TFE deployment is in the 'primary' region or 'secondary' region. | `bool` | `false` | no |
 | <a name="input_rds_apply_immediately"></a> [rds\_apply\_immediately](#input\_rds\_apply\_immediately) | Boolean to apply changes immediately to RDS cluster instance. | `bool` | `true` | no |
 | <a name="input_rds_aurora_engine_mode"></a> [rds\_aurora\_engine\_mode](#input\_rds\_aurora\_engine\_mode) | RDS Aurora database engine mode. | `string` | `"provisioned"` | no |
@@ -432,7 +448,6 @@ Below are links to various docs related to the customization and management of y
 | <a name="input_redis_node_type"></a> [redis\_node\_type](#input\_redis\_node\_type) | Type (size) of Redis node from a compute, memory, and network throughput standpoint. | `string` | `"cache.m5.large"` | no |
 | <a name="input_redis_parameter_group_name"></a> [redis\_parameter\_group\_name](#input\_redis\_parameter\_group\_name) | Name of parameter group to associate with Redis cluster. | `string` | `"default.redis7"` | no |
 | <a name="input_redis_port"></a> [redis\_port](#input\_redis\_port) | Port number the Redis nodes will accept connections on. | `number` | `6379` | no |
-| <a name="input_redis_subnet_ids"></a> [redis\_subnet\_ids](#input\_redis\_subnet\_ids) | List of subnet IDs to use for Redis cluster subnet group. | `list(string)` | `null` | no |
 | <a name="input_redis_transit_encryption_enabled"></a> [redis\_transit\_encryption\_enabled](#input\_redis\_transit\_encryption\_enabled) | Boolean to enable TLS encryption between TFE and the Redis cluster. | `bool` | `true` | no |
 | <a name="input_role_permissions_boundary"></a> [role\_permissions\_boundary](#input\_role\_permissions\_boundary) | ARN of the IAM role permissions boundary to be attached. | `string` | `""` | no |
 | <a name="input_s3_destination_bucket_arn"></a> [s3\_destination\_bucket\_arn](#input\_s3\_destination\_bucket\_arn) | ARN of destination S3 bucket for cross-region replication configuration. Bucket should already exist in secondary region. Required when `s3_enable_bucket_replication` is `true`. | `string` | `""` | no |
@@ -455,7 +470,6 @@ Below are links to various docs related to the customization and management of y
 | <a name="input_tfe_object_storage_s3_access_key_id"></a> [tfe\_object\_storage\_s3\_access\_key\_id](#input\_tfe\_object\_storage\_s3\_access\_key\_id) | Access key ID for S3 bucket. Required when `tfe_object_storage_s3_use_instance_profile` is `false`. | `string` | `null` | no |
 | <a name="input_tfe_object_storage_s3_secret_access_key"></a> [tfe\_object\_storage\_s3\_secret\_access\_key](#input\_tfe\_object\_storage\_s3\_secret\_access\_key) | Secret access key for S3 bucket. Required when `tfe_object_storage_s3_use_instance_profile` is `false`. | `string` | `null` | no |
 | <a name="input_tfe_object_storage_s3_use_instance_profile"></a> [tfe\_object\_storage\_s3\_use\_instance\_profile](#input\_tfe\_object\_storage\_s3\_use\_instance\_profile) | Boolean to use instance profile for S3 bucket access. If `false`, `tfe_object_storage_s3_access_key_id` and `tfe_object_storage_s3_secret_access_key` are required. | `bool` | `true` | no |
-| <a name="input_tfe_redis_password_secret_arn"></a> [tfe\_redis\_password\_secret\_arn](#input\_tfe\_redis\_password\_secret\_arn) | ARN of AWS Secrets Manager secret for the TFE Redis password. Value of secret must contain from 16 to 128 alphanumeric characters or symbols (excluding @, ", and /). | `string` | `null` | no |
 
 ## Outputs
 
@@ -463,6 +477,7 @@ Below are links to various docs related to the customization and management of y
 |------|-------------|
 | <a name="output_aws_lb_controller_irsa_role_arn"></a> [aws\_lb\_controller\_irsa\_role\_arn](#output\_aws\_lb\_controller\_irsa\_role\_arn) | ARN of IAM role for AWS Load Balancer Controller IRSA. |
 | <a name="output_eks_cluster_name"></a> [eks\_cluster\_name](#output\_eks\_cluster\_name) | Name of TFE EKS cluster. |
+| <a name="output_eks_cluster_security_group_id"></a> [eks\_cluster\_security\_group\_id](#output\_eks\_cluster\_security\_group\_id) | ID of the default cluster security group created by EKS. |
 | <a name="output_elasticache_replication_group_arn"></a> [elasticache\_replication\_group\_arn](#output\_elasticache\_replication\_group\_arn) | ARN of ElastiCache Replication Group (Redis) cluster. |
 | <a name="output_elasticache_replication_group_id"></a> [elasticache\_replication\_group\_id](#output\_elasticache\_replication\_group\_id) | ID of ElastiCache Replication Group (Redis) cluster. |
 | <a name="output_elasticache_replication_group_primary_endpoint_address"></a> [elasticache\_replication\_group\_primary\_endpoint\_address](#output\_elasticache\_replication\_group\_primary\_endpoint\_address) | Primary endpoint address of ElastiCache Replication Group (Redis) cluster. |
