@@ -21,9 +21,9 @@ variable "common_tags" {
 }
 
 variable "force_destroy_s3_bucket" {
-  type = bool
+  type        = bool
   description = "ability to detroy the s3 bucket if needed"
-  default = false
+  default     = false
 }
 
 variable "is_secondary_region" {
