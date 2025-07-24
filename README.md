@@ -33,8 +33,8 @@ Terraform module aligned with HashiCorp Validated Designs (HVD) to deploy Terraf
 - (Optional) Identify CIDR range(s) of any monitoring/observability tools that will need to access (scrape) TFE metrics endpoints
 - Identify CIDR range(s) that will need to access the TFE EKS cluster
 - If your EKS cluster is private, your clients/workstations must be able to access the control plane via `kubectl` and `helm`
-- Be familiar with the [TFE ingress requirements](https://developer.hashicorp.com/terraform/enterprise/flexible-deployments/install/requirements/network#ingress)
-- Be familiar with the [TFE egress requirements](https://developer.hashicorp.com/terraform/enterprise/flexible-deployments/install/requirements/network#egress)
+- Be familiar with the [TFE ingress requirements](https://developer.hashicorp.com/terraform/enterprise/flexible-deployments/install/requirements/network#define-ingress-settings)
+- Be familiar with the [TFE egress requirements](https://developer.hashicorp.com/terraform/enterprise/flexible-deployments/install/requirements/network#define-egress-settings)
 - If you are bringing your own EKS cluster (`create_eks_cluster` is `false`), then you must account for the following:
   - Allow `TCP/8443` (HTTPS) and `TCP/8080` (HTTP) ingress to EKS node group/TFE pods subnet from TFE load balancer subnet (for TFE application traffic)
   - Allow `TCP/8201` ingress between nodes in EKS node group/TFE pods subnet (for TFE embedded Vault internal cluster traffic)
