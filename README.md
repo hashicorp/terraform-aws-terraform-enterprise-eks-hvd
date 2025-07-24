@@ -56,8 +56,8 @@ Terraform module aligned with HashiCorp Validated Designs (HVD) to deploy Terraf
 
 The following _bootstrap_ secrets stored in **AWS Secrets Manager** in order to bootstrap the TFE deployment:
 
- - **RDS (PostgreSQL) database password** - random characters stored as a plaintext secret; value must be between 8 and 128 characters long and must **not** contain '@', '\"', or '/' characters
- - **Redis password** - random characters stored as a plaintext secret; value must be between 16 and 128 characters long and must **not** contain '@', '\"', or '/' characters
+- **RDS (PostgreSQL) database password** - random characters stored as a plaintext secret; value must be between 8 and 128 characters long and must **not** contain '@', '\"', or '/' characters
+- **Redis password** - random characters stored as a plaintext secret; value must be between 16 and 128 characters long and must **not** contain '@', '\"', or '/' characters
 
 ### Compute (optional)
 
@@ -69,11 +69,12 @@ If you plan to create a new EKS cluster using this module (`create_eks_cluster` 
   - EKS OIDC provider ARN (used by module to create TFE IRSA)
   - (Optional) AWS load balancer controller installed within EKS cluster (unless you plan to use a custom Kubernetes ingress controller load balancer)
 
-### Log Forwarding (optional)
+### Log forwarding (optional)
 
 One of the following logging destinations:
-  - AWS CloudWatch log group
-  - AWS S3 bucket
+
+- AWS CloudWatch log group
+- AWS S3 bucket
 
 ---
 
@@ -81,11 +82,11 @@ One of the following logging destinations:
 
 1. Create/configure/validate the applicable [prerequisites](#prerequisites).
 
-2. Nested within the [examples](./examples/) directory are subdirectories containing ready-made Terraform configurations for example scenarios on how to call and deploy this module. To get started, choose the example scenario that most closely matches your requirements. You can customize your deployment later by adding additional module [inputs](#inputs) as you see fit (see the [Deployment-Customizations](./docs/deployment-customizations.md) doc for more details).
+1. Nested within the [examples](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/tree/main/examples) directory are subdirectories containing ready-made Terraform configurations for example scenarios on how to call and deploy this module. To get started, choose the example scenario that most closely matches your requirements. You can customize your deployment later by adding additional module [inputs](#inputs) as you see fit (see the [Deployment-Customizations](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/tree/main/docs/deployment-customizations.md) doc for more details).
 
-3. Copy all of the Terraform files from your example scenario of choice into a new destination directory to create your Terraform configuration that will manage your TFE deployment. This is a common directory structure for managing multiple TFE deployments:
-   
-    ```
+1. Copy all of the Terraform files from your example scenario of choice into a new destination directory to create your Terraform configuration that will manage your TFE deployment. This is a common directory structure for managing multiple TFE deployments:
+
+    ```pre
     .
     └── environments
         ├── production
@@ -101,20 +102,21 @@ One of the following logging destinations:
             ├── terraform.tfvars
             └── variables.tf
     ```
+
     >📝 Note: In this example, the user will have two separate TFE deployments; one for their `sandbox` environment, and one for their `production` environment. This is recommended, but not required.
 
-4. (Optional) Uncomment and update the [S3 remote state backend](https://developer.hashicorp.com/terraform/language/settings/backends/s3) configuration provided in the `backend.tf` file with your own custom values. While this step is highly recommended, it is technically not required to use a remote backend config for your TFE deployment (if you are in a sandbox environment, for example).
+1. (Optional) Uncomment and update the [S3 remote state backend](https://developer.hashicorp.com/terraform/language/settings/backends/s3) configuration provided in the `backend.tf` file with your own custom values. While this step is highly recommended, it is technically not required to use a remote backend config for your TFE deployment (if you are in a sandbox environment, for example).
 
-5. Populate your own custom values into the `terraform.tfvars.example` file that was provided (in particular, values enclosed in the `<>` characters). Then, remove the `.example` file extension such that the file is now named `terraform.tfvars`.
+1. Populate your own custom values into the `terraform.tfvars.example` file that was provided (in particular, values enclosed in the `<>` characters). Then, remove the `.example` file extension such that the file is now named `terraform.tfvars`.
 
-6. Navigate to the directory of your newly created Terraform configuration for your TFE deployment, and run `terraform init`, `terraform plan`, and `terraform apply`.
+1. Navigate to the directory of your newly created Terraform configuration for your TFE deployment, and run `terraform init`, `terraform plan`, and `terraform apply`.
 
 **The TFE infrastructure resources have now been created. Next comes the application layer portion of the deployment (which we refer to as the Post Steps), which will involve interacting with your EKS cluster via `kubectl` and installing the TFE application via `helm`.**
 
-## Post Steps
+## Post steps
 
-7. Authenticate to your EKS cluster: 
-   
+1. Authenticate to your EKS cluster:
+
    ```shell
    aws eks --region <aws-region> update-kubeconfig --name <eks-cluster-name>
    ```
@@ -126,19 +128,19 @@ One of the following logging destinations:
 8. AWS recommends installing the AWS load balancer controller for EKS. If it is not already installed in your EKS cluster, install the AWS load balancer controller within the `kube-system` namespace via the Helm chart:
    
    Add the AWS `eks-charts` Helm chart repository:
-   
+
    ```shell
    helm repo add eks https://aws.github.io/eks-charts
    ```
-   
+
    Update your local repo to make sure that you have the most recent charts:
-   
+
    ```shell
    helm repo update eks
    ```
-   
+
    Install the AWS load balancer controller:
-   
+
    ```shell
    helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
     --namespace kube-system \
@@ -163,87 +165,92 @@ One of the following logging destinations:
 
    >📝 Note: You can name your TFE namespace something different than `tfe` if you prefer. If you do name it differently, be sure to update your value of the `tfe_kube_namespace` input variable accordingly.
 
-10. Create the required secrets for your TFE deployment within your new Kubernetes namespace for TFE. There are several ways to do this, whether it be from the CLI via `kubectl`, or another method involving a third-party secrets helper/tool. See the [kubernetes-secrets](./docs/kubernetes-secrets.md) docs for details on the required secrets and how to create them.
+1. Create the required secrets for your TFE deployment within your new Kubernetes namespace for TFE. There are several ways to do this, whether it be from the CLI via `kubectl`, or another method involving a third-party secrets helper/tool. See the [kubernetes-secrets](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/tree/main/docs/kubernetes-secrets.md) docs for details on the required secrets and how to create them.
 
 11. This Terraform module will automatically generate a Helm overrides file within your Terraform working directory named `./helm/module_generated_helm_overrides.yaml`. This Helm overrides file contains values interpolated from some of the infrastructure resources that were created by Terraform in step 6. Within the Helm overrides file, update or validate the values for the remaining settings that are enclosed in the `<>` characters. You may also add any additional configuration settings into your Helm overrides file at this time (see the [helm-overrides](./docs/helm-overrides.md) doc for more details).
 
 12. Now that you have customized your `module_generated_helm_overrides.yaml` file, rename it to something more applicable to your deployment, such as `prod_tfe_overrides.yaml` (or whatever you prefer). Then, within your `terraform.tfvars` file, set the value of `create_helm_overrides_file` to `false`, as we no longer want the Terraform module to manage this file or generate a new one on a subsequent Terraform run.
 
-13. Add the HashiCorp Helm chart repository:
-   
+1. Add the HashiCorp Helm chart repository:
+
     ```shell
     helm repo add hashicorp https://helm.releases.hashicorp.com
     ```
 
    >📝 Note: If you have already added the HashiCorp Helm registry, you should run `helm repo update hashicorp` to ensure you have the latest version.
 
-14. Install the TFE application via `helm`:
-   
+1. Install the TFE application via `helm`:
+
     ```shell
     helm install terraform-enterprise hashicorp/terraform-enterprise --namespace <TFE_NAMESPACE> --values <TFE_OVERRIDES_FILE>
     ```
 
-15. Verify the TFE pod(s) are starting successfully:
-    
+1. Verify the TFE pod(s) are starting successfully:
+
     View the events within the namespace:
-    
+
     ```shell
     kubectl get events --namespace <TFE_NAMESPACE>
     ```
-    
+
     View the pods within the namespace:
-    
+
     ```shell
     kubectl get pods --namespace <TFE_NAMESPACE>
     ```
 
     View the logs from the pod:
-    
+
     ```shell
     kubectl logs <TFE_POD_NAME> --namespace <TFE_NAMESPACE> -f
     ```
 
-16. Create a DNS record for your TFE FQDN. The DNS record should resolve to your TFE load balancer, depending on how the load balancer was configured during your TFE deployment:
-    
+1. Create a DNS record for your TFE FQDN. The DNS record should resolve to your TFE load balancer, depending on how the load balancer was configured during your TFE deployment:
+
     - If you configured a Kubernetes service of type `LoadBalancer` (what the module-generated Helm overrides defaults to), the DNS record should resolve to the DNS name of your AWS network load balancer (NLB).
-      
+
       ```shell
       kubectl get services --namespace <TFE_NAMESPACE>
       ```
-    
+
     - If you configured a custom Kubernetes ingress (meaning you customized your Helm overrides during step 11), the DNS record should resolve to the IP address of your ingress controller load balancer.
-      
+
       ```shell
       kubectl get ingress <INGRESS_NAME> --namespace <INGRESS_NAMESPACE>
       ```
-    
+
     > 📝 Note: If you are creating your DNS record in Route53, AWS recommends creating an _alias_ record (if your TFE load balancer is an AWS-managed load balancer resource).
-  
-17. Verify the TFE application is ready:
-      
+
+1. Verify the TFE application is ready:
+
     ```shell
     curl https://<TFE_FQDN>/_health_check
     ```
 
-18. Follow the remaining steps [here](https://developer.hashicorp.com/terraform/enterprise/flexible-deployments/install/kubernetes/install#create-initial-admin-user) to finish the installation setup, which involves creating the **initial admin user**.
-
----
+1. Follow the remaining steps [here](https://developer.hashicorp.com/terraform/enterprise/flexible-deployments/install/kubernetes/install#4-create-initial-admin-user) to finish the installation setup, which involves creating the **initial admin user**.
 
 ## Docs
 
-Below are links to various docs related to the customization and management of your TFE deployment:
+Within the `docs` folder there is additional guidance on customization and management of your TFE deployment:
 
- - [Deployment customizations](./docs/deployment-customizations.md)
- - [Helm overrides](./docs/helm-overrides.md)
- - [TFE version upgrades](./docs/tfe-version-upgrades.md)
- - [TFE TLS certificate rotation](./docs/tfe-cert-rotation.md)
- - [TFE configuration settings](./docs/tfe-config-settings.md)
- - [TFE Kubernetes secrets](./docs-kubernetes-secrets.md)
- - [TFE IAM role for service accounts](./docs/tfe-irsa.md)
-
----
+- Deployment customizations
+- Helm overrides
+- TFE version upgrades
+- TFE TLS certificate rotation
+- TFE configuration settings
+- TFE Kubernetes secrets
+- TFE IAM role for service accounts
 
 <!-- BEGIN_TF_DOCS -->
+## Module support
+
+This open source software is maintained by the HashiCorp Technical Field Organization, independently of our enterprise products. While our Support Engineering team provides dedicated support for our enterprise offerings, this open source software is not included.
+
+- For help using this open source software, please engage your account team.
+- To report bugs/issues with this open source software, please open them directly against this code repository using the GitHub issues feature.
+
+Please note that there is no official Service Level Agreement (SLA) for support of this software as a HashiCorp customer. This software falls under the definition of Community Software/Versions in your Agreement. We appreciate your understanding and collaboration in improving our open source projects.
+
 ## Requirements
 
 | Name | Version |
@@ -415,6 +422,7 @@ Below are links to various docs related to the customization and management of y
 | <a name="input_eks_subnet_ids"></a> [eks\_subnet\_ids](#input\_eks\_subnet\_ids) | List of subnet IDs to use for EKS cluster. | `list(string)` | `null` | no |
 | <a name="input_existing_eks_cluster_name"></a> [existing\_eks\_cluster\_name](#input\_existing\_eks\_cluster\_name) | Name of existing EKS cluster, which will receive Pod Identity addon. Required when `create_eks_cluster` is `false` and `create_tfe_eks_pod_identity` is true. | `string` | `null` | no |
 | <a name="input_force_destroy_s3_bucket"></a> [force\_destroy\_s3\_bucket](#input\_force\_destroy\_s3\_bucket) | ability to detroy the s3 bucket if needed | `bool` | `false` | no |
+| <a name="input_friendly_name_prefix"></a> [friendly\_name\_prefix](#input\_friendly\_name\_prefix) | Friendly name prefix used for uniquely naming all AWS resources for this deployment. Most commonly set to either an environment (e.g. 'sandbox', 'prod') a team name, or a project name. | `string` | n/a | yes |
 | <a name="input_is_secondary_region"></a> [is\_secondary\_region](#input\_is\_secondary\_region) | Boolean indicating whether this TFE deployment is in the 'primary' region or 'secondary' region. | `bool` | `false` | no |
 | <a name="input_rds_apply_immediately"></a> [rds\_apply\_immediately](#input\_rds\_apply\_immediately) | Boolean to apply changes immediately to RDS cluster instance. | `bool` | `true` | no |
 | <a name="input_rds_aurora_engine_mode"></a> [rds\_aurora\_engine\_mode](#input\_rds\_aurora\_engine\_mode) | RDS Aurora database engine mode. | `string` | `"provisioned"` | no |
@@ -436,6 +444,7 @@ Below are links to various docs related to the customization and management of y
 | <a name="input_rds_skip_final_snapshot"></a> [rds\_skip\_final\_snapshot](#input\_rds\_skip\_final\_snapshot) | Boolean to enable RDS to take a final database snapshot before destroying. | `bool` | `false` | no |
 | <a name="input_rds_source_region"></a> [rds\_source\_region](#input\_rds\_source\_region) | Source region for RDS cross-region replication. Only required when `is_secondary_region` is `true`, otherwise leave as `null`. | `string` | `null` | no |
 | <a name="input_rds_storage_encrypted"></a> [rds\_storage\_encrypted](#input\_rds\_storage\_encrypted) | Boolean to encrypt RDS storage. An AWS managed key will be used when `true` unless a value is also specified for `rds_kms_key_arn`. | `bool` | `true` | no |
+| <a name="input_rds_subnet_ids"></a> [rds\_subnet\_ids](#input\_rds\_subnet\_ids) | List of subnet IDs to use for RDS database subnet group. | `list(string)` | n/a | yes |
 | <a name="input_redis_apply_immediately"></a> [redis\_apply\_immediately](#input\_redis\_apply\_immediately) | Boolean to apply changes immediately to Redis cluster. | `bool` | `true` | no |
 | <a name="input_redis_at_rest_encryption_enabled"></a> [redis\_at\_rest\_encryption\_enabled](#input\_redis\_at\_rest\_encryption\_enabled) | Boolean to enable encryption at rest on Redis cluster. An AWS managed key will be used when `true` unless a value is also specified for `redis_kms_key_arn`. | `bool` | `true` | no |
 | <a name="input_redis_auto_minor_version_upgrade"></a> [redis\_auto\_minor\_version\_upgrade](#input\_redis\_auto\_minor\_version\_upgrade) | Boolean to enable automatic minor version upgrades for Redis cluster. | `bool` | `true` | no |
@@ -458,7 +467,9 @@ Below are links to various docs related to the customization and management of y
 | <a name="input_tfe_cost_estimation_iam_enabled"></a> [tfe\_cost\_estimation\_iam\_enabled](#input\_tfe\_cost\_estimation\_iam\_enabled) | Boolean to add AWS pricing actions to TFE IAM role for service account (IRSA). Only implemented when `create_tfe_eks_irsa` is `true`. | `string` | `true` | no |
 | <a name="input_tfe_database_name"></a> [tfe\_database\_name](#input\_tfe\_database\_name) | Name of TFE database to create within RDS global cluster. | `string` | `"tfe"` | no |
 | <a name="input_tfe_database_parameters"></a> [tfe\_database\_parameters](#input\_tfe\_database\_parameters) | PostgreSQL server parameters for the connection URI. Used to configure the PostgreSQL connection. | `string` | `"sslmode=require"` | no |
+| <a name="input_tfe_database_password_secret_arn"></a> [tfe\_database\_password\_secret\_arn](#input\_tfe\_database\_password\_secret\_arn) | ARN of AWS Secrets Manager secret for the TFE RDS Aurora (PostgreSQL) database password. | `string` | n/a | yes |
 | <a name="input_tfe_database_user"></a> [tfe\_database\_user](#input\_tfe\_database\_user) | Username for TFE RDS database cluster. | `string` | `"tfe"` | no |
+| <a name="input_tfe_fqdn"></a> [tfe\_fqdn](#input\_tfe\_fqdn) | Fully qualified domain name (FQDN) of TFE instance. This name should eventually resolve to the TFE load balancer DNS name or IP address and will be what clients use to access TFE. | `string` | n/a | yes |
 | <a name="input_tfe_http_port"></a> [tfe\_http\_port](#input\_tfe\_http\_port) | HTTP port number that the TFE application will listen on within the TFE pods. It is recommended to leave this as the default value. | `number` | `8080` | no |
 | <a name="input_tfe_https_port"></a> [tfe\_https\_port](#input\_tfe\_https\_port) | HTTPS port number that the TFE application will listen on within the TFE pods. It is recommended to leave this as the default value. | `number` | `8443` | no |
 | <a name="input_tfe_kube_namespace"></a> [tfe\_kube\_namespace](#input\_tfe\_kube\_namespace) | Name of Kubernetes namespace for TFE service account (to be created by Helm chart). Used to configure EKS [IRSA](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html). | `string` | `"tfe"` | no |
@@ -468,6 +479,8 @@ Below are links to various docs related to the customization and management of y
 | <a name="input_tfe_object_storage_s3_access_key_id"></a> [tfe\_object\_storage\_s3\_access\_key\_id](#input\_tfe\_object\_storage\_s3\_access\_key\_id) | Access key ID for S3 bucket. Required when `tfe_object_storage_s3_use_instance_profile` is `false`. | `string` | `null` | no |
 | <a name="input_tfe_object_storage_s3_secret_access_key"></a> [tfe\_object\_storage\_s3\_secret\_access\_key](#input\_tfe\_object\_storage\_s3\_secret\_access\_key) | Secret access key for S3 bucket. Required when `tfe_object_storage_s3_use_instance_profile` is `false`. | `string` | `null` | no |
 | <a name="input_tfe_object_storage_s3_use_instance_profile"></a> [tfe\_object\_storage\_s3\_use\_instance\_profile](#input\_tfe\_object\_storage\_s3\_use\_instance\_profile) | Boolean to use instance profile for S3 bucket access. If `false`, `tfe_object_storage_s3_access_key_id` and `tfe_object_storage_s3_secret_access_key` are required. | `bool` | `true` | no |
+| <a name="input_tfe_redis_password_secret_arn"></a> [tfe\_redis\_password\_secret\_arn](#input\_tfe\_redis\_password\_secret\_arn) | ARN of AWS Secrets Manager secret for the TFE Redis password. Value of secret must contain from 16 to 128 alphanumeric characters or symbols (excluding @, ", and /). | `string` | `null` | no |
+| <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | ID of VPC where TFE will be deployed. | `string` | n/a | yes |
 
 ## Outputs
 
