@@ -1,10 +1,12 @@
-# Deployment Customizations
+# Deployment customizations
 
 This doc contains various deployment customizations as it relates to creating your TFE infrastructure, and their corresponding module input variables that you may additionally set to meet your own requirements where the module default values do not suffice. That said, all of the module input variables on this page are optional.
 
+<!--
 ## EKS
 
 placeholder
+-->
 
 ## KMS
 
