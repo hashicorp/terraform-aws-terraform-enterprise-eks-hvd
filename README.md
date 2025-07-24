@@ -123,7 +123,7 @@ One of the following logging destinations:
 
    >📝 Note: You can get the value of your EKS cluster name from the `eks_cluster_name` Terraform output if you created your EKS cluster via this module.
 
-   >📝 Note: If you are running this command as an AWS identity *other than* the one that created the cluster, you will need to create additional [access entries](https://docs.aws.amazon.com/eks/latest/userguide/access-entries.html) similar to the ones created [here](./eks_cluster.tf#L44)
+   >📝 Note: If you are running this command as an AWS identity *other than* the one that created the cluster, you will need to create additional [access entries](https://docs.aws.amazon.com/eks/latest/userguide/access-entries.html) similar to the ones created [here](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/main/eks_cluster.tf#L44)
 
 1. AWS recommends installing the AWS load balancer controller for EKS. If it is not already installed in your EKS cluster, install the AWS load balancer controller within the `kube-system` namespace via the Helm chart:
    
@@ -167,7 +167,7 @@ One of the following logging destinations:
 
 1. Create the required secrets for your TFE deployment within your new Kubernetes namespace for TFE. There are several ways to do this, whether it be from the CLI via `kubectl`, or another method involving a third-party secrets helper/tool. See the [kubernetes-secrets](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/tree/main/docs/kubernetes-secrets.md) docs for details on the required secrets and how to create them.
 
-1. This Terraform module will automatically generate a Helm overrides file within your Terraform working directory named `./helm/module_generated_helm_overrides.yaml`. This Helm overrides file contains values interpolated from some of the infrastructure resources that were created by Terraform in step 6. Within the Helm overrides file, update or validate the values for the remaining settings that are enclosed in the `<>` characters. You may also add any additional configuration settings into your Helm overrides file at this time (see the [helm-overrides](./docs/helm-overrides.md) doc for more details).
+1. This Terraform module will automatically generate a Helm overrides file within your Terraform working directory named `./helm/module_generated_helm_overrides.yaml`. This Helm overrides file contains values interpolated from some of the infrastructure resources that were created by Terraform in step 6. Within the Helm overrides file, update or validate the values for the remaining settings that are enclosed in the `<>` characters. You may also add any additional configuration settings into your Helm overrides file at this time (see the [helm-overrides](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/tree/main/docs/helm-overrides.md) doc for more details).
 
 1. Now that you have customized your `module_generated_helm_overrides.yaml` file, rename it to something more applicable to your deployment, such as `prod_tfe_overrides.yaml` (or whatever you prefer). Then, within your `terraform.tfvars` file, set the value of `create_helm_overrides_file` to `false`, as we no longer want the Terraform module to manage this file or generate a new one on a subsequent Terraform run.
 
