@@ -48,8 +48,9 @@ Terraform module aligned with HashiCorp Validated Designs (HVD) to deploy Terraf
   - Private key must **not** be password protected
 - TLS certificate authority (CA) bundle (_e.g._ `ca_bundle.pem`) corresponding with the CA that issues your TFE TLS certificates
   - CA bundle must be in PEM format
+  - You may include additional certificate chains corresponding to external systems that TFE will make outbound connections to (_e.g._ your self-hosted VCS, if its certificate was issued by a different CA than your TFE certificate).
 
->📝 Note: The TLS certificate and private key will be created as Kubernetes secrets durint the [Post Steps](#post-steps).
+>📝 Note: The TLS certificate and private key will be created as Kubernetes secrets during the [Post Steps](#post-steps).
 
 ### Secrets management
 
@@ -370,8 +371,8 @@ Please note that there is no official Service Level Agreement (SLA) for support 
 | <a name="input_aws_lb_controller_kube_svc_account"></a> [aws\_lb\_controller\_kube\_svc\_account](#input\_aws\_lb\_controller\_kube\_svc\_account) | Name of Kubernetes service account for AWS Load Balancer Controller (to be created by Helm chart). Used to configure EKS [IRSA](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html). | `string` | `"aws-load-balancer-controller"` | no |
 | <a name="input_cidr_allow_egress_from_tfe_lb"></a> [cidr\_allow\_egress\_from\_tfe\_lb](#input\_cidr\_allow\_egress\_from\_tfe\_lb) | List of CIDR ranges to allow all outbound traffic from TFE load balancer. Only set this to your TFE pod CIDR ranges when an EKS cluster already exists outside of this module. | `list(string)` | `null` | no |
 | <a name="input_cidr_allow_ingress_tfe_443"></a> [cidr\_allow\_ingress\_tfe\_443](#input\_cidr\_allow\_ingress\_tfe\_443) | List of CIDR ranges to allow TCP/443 inbound to TFE load balancer (load balancer is managed by Helm/K8s). | `list(string)` | `[]` | no |
-| <a name="input_cidr_allow_ingress_tfe_metrics_http"></a> [cidr\_allow\_ingress\_tfe\_metrics\_http](#input\_cidr\_allow\_ingress\_tfe\_metrics\_http) | List of CIDR ranges to allow TCP/9090 (TFE HTTP metrics endpoint) inbound to TFE pods. | `list(string)` | `[]` | no |
-| <a name="input_cidr_allow_ingress_tfe_metrics_https"></a> [cidr\_allow\_ingress\_tfe\_metrics\_https](#input\_cidr\_allow\_ingress\_tfe\_metrics\_https) | List of CIDR ranges to allow TCP/9091 (TFE HTTPS metrics endpoint) inbound to TFE pods. | `list(string)` | `[]` | no |
+| <a name="input_cidr_allow_ingress_tfe_metrics_http"></a> [cidr\_allow\_ingress\_tfe\_metrics\_http](#input\_cidr\_allow\_ingress\_tfe\_metrics\_http) | List of CIDR ranges to allow TCP/9090 or port specified in `tfe_metrics_http_port` (TFE HTTP metrics endpoint) inbound to TFE node group instances. | `list(string)` | `null` | no |
+| <a name="input_cidr_allow_ingress_tfe_metrics_https"></a> [cidr\_allow\_ingress\_tfe\_metrics\_https](#input\_cidr\_allow\_ingress\_tfe\_metrics\_https) | List of CIDR ranges to allow TCP/9091 or port specified in `tfe_metrics_https_port` (TFE HTTPS metrics endpoint) inbound to TFE node group instances. | `list(string)` | `null` | no |
 | <a name="input_cidr_allow_ingress_to_rds"></a> [cidr\_allow\_ingress\_to\_rds](#input\_cidr\_allow\_ingress\_to\_rds) | List of CIDR ranges to allow TCP/5432 (PostgreSQL) inbound to RDS cluster. | `list(string)` | `null` | no |
 | <a name="input_cidr_allow_ingress_to_redis"></a> [cidr\_allow\_ingress\_to\_redis](#input\_cidr\_allow\_ingress\_to\_redis) | List of CIDR ranges to allow TCP/6379 (Redis) inbound to Redis cluster. | `list(string)` | `null` | no |
 | <a name="input_common_tags"></a> [common\_tags](#input\_common\_tags) | Map of common tags for all taggable AWS resources. | `map(string)` | `{}` | no |
@@ -430,6 +431,7 @@ Please note that there is no official Service Level Agreement (SLA) for support 
 | <a name="input_redis_port"></a> [redis\_port](#input\_redis\_port) | Port number the Redis nodes will accept connections on. | `number` | `6379` | no |
 | <a name="input_redis_subnet_ids"></a> [redis\_subnet\_ids](#input\_redis\_subnet\_ids) | List of subnet IDs to use for Redis cluster subnet group. | `list(string)` | `null` | no |
 | <a name="input_redis_transit_encryption_enabled"></a> [redis\_transit\_encryption\_enabled](#input\_redis\_transit\_encryption\_enabled) | Boolean to enable TLS encryption between TFE and the Redis cluster. | `bool` | `true` | no |
+| <a name="input_role_permissions_boundary"></a> [role\_permissions\_boundary](#input\_role\_permissions\_boundary) | ARN of the IAM role permissions boundary to be attached. | `string` | `""` | no |
 | <a name="input_s3_destination_bucket_arn"></a> [s3\_destination\_bucket\_arn](#input\_s3\_destination\_bucket\_arn) | ARN of destination S3 bucket for cross-region replication configuration. Bucket should already exist in secondary region. Required when `s3_enable_bucket_replication` is `true`. | `string` | `""` | no |
 | <a name="input_s3_destination_bucket_kms_key_arn"></a> [s3\_destination\_bucket\_kms\_key\_arn](#input\_s3\_destination\_bucket\_kms\_key\_arn) | ARN of KMS key of destination S3 bucket for cross-region replication configuration if it is encrypted with a customer managed key (CMK). | `string` | `null` | no |
 | <a name="input_s3_enable_bucket_replication"></a> [s3\_enable\_bucket\_replication](#input\_s3\_enable\_bucket\_replication) | Boolean to enable cross-region replication for TFE S3 bucket. Do not enable when `is_secondary_region` is `true`. An `s3_destination_bucket_arn` is also required when `true`. | `bool` | `false` | no |

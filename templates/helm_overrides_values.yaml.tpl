@@ -7,11 +7,13 @@ tls:
 image:
  repository: images.releases.hashicorp.com
  name: hashicorp/terraform-enterprise
- tag: <v202407-1>
+ tag: <v202503-1> # refer to https://developer.hashicorp.com/terraform/enterprise/releases
 
 %{ if tfe_eks_irsa_arn != "" ~}
 serviceAccount:
-  annotations: 
+  enabled: true
+  name: ${tfe_kube_svc_account}
+  annotations:
     eks.amazonaws.com/role-arn: ${tfe_eks_irsa_arn}
 %{ endif ~}
 
@@ -27,7 +29,7 @@ service:
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-type: "nlb-ip"
     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "tcp"
-    service.beta.kubernetes.io/aws-load-balancer-scheme: "internal"
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internal" # for an external LB, set to "internet-facing"
     service.beta.kubernetes.io/aws-load-balancer-subnets: "<list, of, lb_subnet_ids>" # TFE load balancer subnets, no brackets in annotation list
     service.beta.kubernetes.io/aws-load-balancer-security-groups: ${tfe_lb_security_groups}
   type: LoadBalancer

@@ -116,14 +116,24 @@ variable "cidr_allow_ingress_tfe_443" {
 
 variable "cidr_allow_ingress_tfe_metrics_http" {
   type        = list(string)
-  description = "List of CIDR ranges to allow TCP/9090 (TFE HTTP metrics endpoint) inbound to TFE pods."
-  default     = []
+  description = "List of CIDR ranges to allow TCP/9090 or port specified in `tfe_metrics_http_port` (TFE HTTP metrics endpoint) inbound to TFE node group instances."
+  default     = null
+
+  validation {
+    condition     = var.cidr_allow_ingress_tfe_metrics_http != null ? length(var.cidr_allow_ingress_tfe_metrics_http) > 0 : true
+    error_message = "If not `null`, value must contain at least one valid CIDR range in the list."
+  }
 }
 
 variable "cidr_allow_ingress_tfe_metrics_https" {
   type        = list(string)
-  description = "List of CIDR ranges to allow TCP/9091 (TFE HTTPS metrics endpoint) inbound to TFE pods."
-  default     = []
+  description = "List of CIDR ranges to allow TCP/9091 or port specified in `tfe_metrics_https_port` (TFE HTTPS metrics endpoint) inbound to TFE node group instances."
+  default     = null
+
+  validation {
+    condition     = var.cidr_allow_ingress_tfe_metrics_https != null ? length(var.cidr_allow_ingress_tfe_metrics_https) > 0 : true
+    error_message = "If not `null`, value must contain at least one valid CIDR range in the list."
+  }
 }
 
 variable "cidr_allow_egress_from_tfe_lb" {
@@ -223,6 +233,12 @@ variable "aws_lb_controller_kube_svc_account" {
   type        = string
   description = "Name of Kubernetes service account for AWS Load Balancer Controller (to be created by Helm chart). Used to configure EKS [IRSA](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html)."
   default     = "aws-load-balancer-controller"
+}
+
+variable "role_permissions_boundary" {
+  type        = string
+  description = "ARN of the IAM role permissions boundary to be attached."
+  default     = ""
 }
 
 #------------------------------------------------------------------------------
