@@ -241,6 +241,11 @@ Within the `docs` folder there is additional guidance on customization and manag
 - TFE Kubernetes secrets
 - TFE IAM role for service accounts
 
+## Refactoring (moved/removed blocks)
+The `moved` blocks in `refactoring.tf` allow older versions of the module to be upgraded without disruptive destroy/create
+actions due to changing resource addresses. Please maintain them as they are forward-compatible and do nothing
+if no resources exist at the `from` address.
+
 ## Module support
 
 This open source software is maintained by the HashiCorp Technical Field Organization, independently of our enterprise products. While our Support Engineering team provides dedicated support for our enterprise offerings, this open source software is not included.
