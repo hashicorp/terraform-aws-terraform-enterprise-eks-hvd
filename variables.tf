@@ -21,9 +21,9 @@ variable "common_tags" {
 }
 
 variable "force_destroy_s3_bucket" {
-  type = bool
+  type        = bool
   description = "ability to detroy the s3 bucket if needed"
-  default = false
+  default     = false
 }
 
 variable "is_secondary_region" {
@@ -92,7 +92,6 @@ variable "rds_subnet_ids" {
 variable "redis_subnet_ids" {
   type        = list(string)
   description = "List of subnet IDs to use for Redis cluster subnet group."
-  default     = null
 }
 
 variable "create_tfe_lb_security_group" {
@@ -196,6 +195,33 @@ variable "create_tfe_eks_irsa" {
   type        = bool
   description = "Boolean to create TFE IAM role and policies to enable TFE EKS IAM role for service accounts (IRSA)."
   default     = false
+  validation {
+    condition     = !(var.create_tfe_eks_irsa && var.create_tfe_eks_pod_identity)
+    error_message = "Only one of create_tfe_eks_pod_identity or create_tfe_eks_irsa is allowed."
+  }
+}
+
+variable "create_tfe_eks_pod_identity" {
+  type        = bool
+  description = "Boolean to create TFE IAM role and policies with the EKS addon to enable TFE EKS IAM role using Pod Identity."
+  default     = false
+
+  validation {
+    condition     = var.create_tfe_eks_pod_identity ? var.create_eks_cluster || (var.existing_eks_cluster_name != null && var.existing_eks_cluster_name != "") : true
+    error_message = "Pod Identity for TFE requires either creating a new EKS cluster or providing an existing EKS cluster name."
+  }
+}
+
+variable "existing_eks_cluster_name" {
+  type        = string
+  description = "Name of existing EKS cluster, which will receive Pod Identity addon. Required when `create_eks_cluster` is `false` and `create_tfe_eks_pod_identity` is true."
+  default     = null
+}
+
+variable "eks_pod_identity_addon_version" {
+  type        = string
+  description = "The version of the EKS Pod Identity Agent to use. Defaults to latest."
+  default     = null
 }
 
 variable "tfe_kube_namespace" {
@@ -214,6 +240,22 @@ variable "create_aws_lb_controller_irsa" {
   type        = bool
   description = "Boolean to create AWS Load Balancer Controller IAM role and policies to enable EKS IAM role for service accounts (IRSA)."
   default     = false
+
+  validation {
+    condition     = !(var.create_aws_lb_controller_irsa && var.create_aws_lb_controller_pod_identity)
+    error_message = "Only one of create_aws_lb_controller_pod_identity or create_aws_lb_controller_irsa is allowed."
+  }
+}
+
+variable "create_aws_lb_controller_pod_identity" {
+  type        = bool
+  description = "Boolean to create AWS Load Balancer Controller IAM role and policies with the EKS addon to enable AWS LB Controller EKS IAM role using Pod Identity."
+  default     = false
+
+  validation {
+    condition     = var.create_aws_lb_controller_pod_identity ? var.create_eks_cluster || (var.existing_eks_cluster_name != null && var.existing_eks_cluster_name != "") : true
+    error_message = "Pod Identity for AWS LB Controller requires either creating a new EKS cluster or providing an existing EKS cluster name."
+  }
 }
 
 variable "aws_lb_controller_kube_namespace" {
@@ -245,7 +287,7 @@ variable "create_eks_cluster" {
 
 variable "eks_cluster_name" {
   type        = string
-  description = "Name of EKS cluster."
+  description = "Name of created EKS cluster. Will be prefixed by `var.friendly_name_prefix`"
   default     = "tfe-eks-cluster"
 }
 
@@ -628,7 +670,6 @@ variable "s3_destination_bucket_kms_key_arn" {
 variable "tfe_redis_password_secret_arn" {
   type        = string
   description = "ARN of AWS Secrets Manager secret for the TFE Redis password. Value of secret must contain from 16 to 128 alphanumeric characters or symbols (excluding @, \", and /)."
-  default     = null
 }
 
 variable "redis_engine_version" {

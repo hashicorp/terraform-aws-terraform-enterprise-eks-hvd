@@ -35,6 +35,11 @@ output "tfe_lb_security_group_id" {
   description = "ID of security group for TFE load balancer."
 }
 
+output "eks_cluster_security_group_id" {
+  value       = try(aws_eks_cluster.tfe[0].vpc_config[0].cluster_security_group_id, null)
+  description = "ID of the default cluster security group created by EKS."
+}
+
 #------------------------------------------------------------------------------
 # Database
 #------------------------------------------------------------------------------
@@ -124,5 +129,3 @@ output "tfe_redis_password_base64" {
   description = "Base64-encoded TFE Redis password."
   sensitive   = true
 }
-
-
