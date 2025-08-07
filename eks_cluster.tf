@@ -112,3 +112,14 @@ resource "aws_security_group_rule" "eks_cluster_allow_all_egress" {
   description       = "Allow all outbound traffic from EKS cluster."
   security_group_id = aws_security_group.eks_cluster_allow[0].id
 }
+
+#------------------------------------------------------------------------------
+# Pod Identity
+#------------------------------------------------------------------------------
+resource "aws_eks_addon" "pod_identity" {
+  count = (var.create_tfe_eks_pod_identity || var.create_aws_lb_controller_pod_identity) ? 1 : 0
+
+  cluster_name  = var.create_eks_cluster ? aws_eks_cluster.tfe[0].name : var.existing_eks_cluster_name
+  addon_name    = "eks-pod-identity-agent"
+  addon_version = var.eks_pod_identity_addon_version
+}

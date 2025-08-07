@@ -70,8 +70,8 @@ resource "aws_security_group_rule" "redis_allow_ingress_from_sg" {
   count = var.sg_allow_ingress_to_redis != null ? 1 : 0
 
   type                     = "ingress"
-  from_port                = 5432
-  to_port                  = 5432
+  from_port                = 6379
+  to_port                  = 6379
   protocol                 = "tcp"
   source_security_group_id = var.sg_allow_ingress_to_redis
   description              = "Allow TCP/6379 (Redis) inbound to Redis cluster from specified security group ID."
@@ -83,8 +83,8 @@ resource "aws_security_group_rule" "redis_allow_ingress_from_cidr" {
   count = var.cidr_allow_ingress_to_redis != null ? 1 : 0
 
   type        = "ingress"
-  from_port   = 5432
-  to_port     = 5432
+  from_port   = 6379
+  to_port     = 6379
   protocol    = "tcp"
   cidr_blocks = var.cidr_allow_ingress_to_redis
   description = "Allow TCP/6379 (Redis) inbound to Redis cluster from specified CIDR ranges."

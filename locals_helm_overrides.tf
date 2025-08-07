@@ -4,11 +4,12 @@
 locals {
   helm_overrides_values = {
     # Service account
-    tfe_eks_irsa_arn     = var.create_tfe_eks_irsa ? aws_iam_role.tfe_irsa[0].arn : ""
-    tfe_kube_svc_account = var.tfe_kube_svc_account
+    create_service_account = var.create_tfe_eks_irsa || var.create_tfe_eks_pod_identity
+    tfe_eks_irsa_arn       = var.create_tfe_eks_irsa ? aws_iam_role.tfe_irsa[0].arn : ""
+    tfe_kube_svc_account   = var.tfe_kube_svc_account
 
     # Service annotations
-    tfe_lb_security_groups = var.create_eks_cluster ? aws_security_group.tfe_lb_allow[0].id : ""
+    tfe_lb_security_groups = var.create_tfe_lb_security_group ? aws_security_group.tfe_lb_allow[0].id : ""
 
     # TFE configuration settings
     tfe_hostname           = var.tfe_fqdn
