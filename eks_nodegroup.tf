@@ -156,6 +156,19 @@ resource "aws_security_group_rule" "tfe_eks_nodegroup_allow_tfe_http_from_lb" {
   security_group_id = aws_security_group.tfe_eks_nodegroup_allow[0].id
 }
 
+resource "aws_security_group_rule" "tfe_eks_nodegroup_allow_tfe_admin_https_from_lb" {
+  count = var.create_eks_cluster && length(aws_security_group.tfe_lb_allow) > 0 ? 1 : 0
+
+  type                     = "ingress"
+  from_port                = var.tfe_admin_https_port
+  to_port                  = var.tfe_admin_https_port
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.tfe_lb_allow[0].id
+  description              = "Allow TCP/8446 or specified port (TFE Admin HTTPS) inbound to node group from TFE load balancer."
+
+  security_group_id = aws_security_group.tfe_eks_nodegroup_allow[0].id
+}
+
 resource "aws_security_group_rule" "tfe_eks_nodegroup_allow_tfe_https_from_lb" {
   count = var.create_eks_cluster && length(aws_security_group.tfe_lb_allow) > 0 ? 1 : 0
 
