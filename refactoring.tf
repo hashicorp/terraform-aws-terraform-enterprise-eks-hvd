@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 # Resource name changed from:
 # https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/pull/22/
 
