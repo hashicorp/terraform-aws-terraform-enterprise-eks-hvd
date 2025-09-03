@@ -13,7 +13,7 @@ resource "aws_eks_node_group" "tfe" {
   subnet_ids      = var.eks_subnet_ids
   capacity_type   = "ON_DEMAND"
   instance_types  = [var.eks_nodegroup_instance_type]
-  ami_type        = var.eks_nodegroup_ami_type
+  ami_type        = "CUSTOM" # var.eks_nodegroup_ami_type
 
   launch_template {
     id      = aws_launch_template.tfe_eks_nodegroup[0].id
