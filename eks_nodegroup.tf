@@ -34,6 +34,10 @@ resource "aws_eks_node_group" "tfe" {
     { "Name" = "${var.friendly_name_prefix}-${var.eks_nodegroup_name}" },
     var.common_tags
   )
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 #------------------------------------------------------------------------------
