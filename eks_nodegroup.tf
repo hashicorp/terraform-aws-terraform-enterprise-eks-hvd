@@ -79,7 +79,7 @@ resource "aws_launch_template" "tfe_eks_nodegroup" {
   count = var.create_eks_cluster ? 1 : 0
 
   name     = "${var.friendly_name_prefix}-${var.eks_nodegroup_name}-launch-template"
-  image_id = var.eks_nodegroup_ami_id
+  image_id = var.eks_nodegroup_ami_id != null ? var.eks_nodegroup_ami_id : data.aws_ami.tfe_eks_nodegroup_default[0].id
 
   network_interfaces {
     associate_public_ip_address = false
