@@ -13,7 +13,8 @@ resource "aws_eks_node_group" "tfe" {
   subnet_ids             = var.eks_subnet_ids
   capacity_type          = "ON_DEMAND"
   instance_types         = [var.eks_nodegroup_instance_type]
-  ami_type               = "CUSTOM" # var.eks_nodegroup_ami_type
+  ami_type               = var.eks_nodegroup_ami_type
+  release_version        = nonsensitive(data.aws_ssm_parameter.eks_ami_release_version[0].value)
 
   launch_template {
     id      = aws_launch_template.tfe_eks_nodegroup[0].id
@@ -38,6 +39,12 @@ resource "aws_eks_node_group" "tfe" {
   lifecycle {
     create_before_destroy = true
   }
+}
+
+# TODO: use the var.eks_nodegroup_ami_type to lookup the correct thing here
+data "aws_ssm_parameter" "eks_ami_release_version" {
+  count = var.create_eks_cluster ? 1 : 0
+  name  = "/aws/service/eks/optimized-ami/${aws_eks_cluster.tfe[0].version}/amazon-linux-2023/x86_64/standard/recommended/release_version"
 }
 
 #------------------------------------------------------------------------------
@@ -83,7 +90,7 @@ resource "aws_launch_template" "tfe_eks_nodegroup" {
   count = var.create_eks_cluster ? 1 : 0
 
   name     = "${var.friendly_name_prefix}-${var.eks_nodegroup_name}-launch-template"
-  image_id = var.eks_nodegroup_ami_id != null ? var.eks_nodegroup_ami_id : data.aws_ami.tfe_eks_nodegroup_default[0].id
+  image_id = var.eks_nodegroup_ami_id
 
   network_interfaces {
     associate_public_ip_address = false
