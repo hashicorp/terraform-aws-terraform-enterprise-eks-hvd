@@ -7,14 +7,14 @@
 resource "aws_eks_node_group" "tfe" {
   count = var.create_eks_cluster ? 1 : 0
 
-  cluster_name           = aws_eks_cluster.tfe[0].name
-  node_group_name_prefix = "${var.friendly_name_prefix}-${var.eks_nodegroup_name}"
-  node_role_arn          = aws_iam_role.tfe_eks_nodegroup[0].arn
-  subnet_ids             = var.eks_subnet_ids
-  capacity_type          = "ON_DEMAND"
-  instance_types         = [var.eks_nodegroup_instance_type]
-  ami_type               = var.eks_nodegroup_ami_type
-  release_version        = nonsensitive(data.aws_ssm_parameter.eks_ami_release_version[0].value)
+  cluster_name    = aws_eks_cluster.tfe[0].name
+  node_group_name = "${var.friendly_name_prefix}-${var.eks_nodegroup_name}"
+  node_role_arn   = aws_iam_role.tfe_eks_nodegroup[0].arn
+  subnet_ids      = var.eks_subnet_ids
+  capacity_type   = "ON_DEMAND"
+  instance_types  = [var.eks_nodegroup_instance_type]
+  ami_type        = var.eks_nodegroup_ami_type
+  release_version = nonsensitive(data.aws_ssm_parameter.eks_ami_release_version[0].value)
 
   launch_template {
     id      = aws_launch_template.tfe_eks_nodegroup[0].id
@@ -35,10 +35,6 @@ resource "aws_eks_node_group" "tfe" {
     { "Name" = "${var.friendly_name_prefix}-${var.eks_nodegroup_name}" },
     var.common_tags
   )
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 # TODO: use the var.eks_nodegroup_ami_type to lookup the correct thing here
