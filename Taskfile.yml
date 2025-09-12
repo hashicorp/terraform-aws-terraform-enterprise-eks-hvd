@@ -117,7 +117,7 @@ tasks:
         python .github/scripts/markdown-url-converter/markdown-url-converter.py --repo="{{.REPO_OWNER}}/{{.MOD_REPO}}" --release="{{.MOD_RELEASE}}" --overwrite .
       - git commit  --allow-empty -am "Release version ${MOD_RELEASE}"
       - git tag -a ${MOD_RELEASE} -m "${MOD_RELEASE} release"
-      - git revert HEAD --no-edit
+      - git revert HEAD --no-edit -n
       - git push origin --tags
       - git push origin rel-${MOD_RELEASE}
       - |
