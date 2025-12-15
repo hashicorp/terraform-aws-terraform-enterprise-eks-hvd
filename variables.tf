@@ -52,6 +52,12 @@ variable "tfe_https_port" {
   default     = 8443
 }
 
+variable "tfe_admin_https_port" {
+  type        = number
+  description = "HTTPS port number that the TFE Admin application will listen on within the TFE pods. It is recommended to leave this as the default value."
+  default     = 8446
+}
+
 variable "tfe_metrics_http_port" {
   type        = number
   description = "HTTP port number that the TFE metrics endpoint will listen on within the TFE pods. It is recommended to leave this as the default value."
