@@ -41,7 +41,7 @@ service:
     service.beta.kubernetes.io/aws-load-balancer-security-groups: ${tfe_lb_security_groups}
     service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: "https"
     service.beta.kubernetes.io/aws-load-balancer-healthcheck-path: "/_health_check"
-    service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: "8443"
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: ${tfe_https_port}
   type: LoadBalancer
   port: 443
 
