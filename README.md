@@ -115,6 +115,10 @@ One of the following logging destinations:
 
 ## Post steps
 
+**At this point, the Terraform-managed infrastructure resources for TFE have been created.**
+
+The next phase of the deployment is the application layer (referred to as the **Post Steps**). This phase involves interacting with your EKS cluster using `kubectl` and install`ing the TFE application using `helm`. The steps are documented using these CLI tools as a baseline; equivalent Kubernetes tooling or workflows may be used as appropriate.
+
 1. Authenticate to your EKS cluster:
 
    ```shell
