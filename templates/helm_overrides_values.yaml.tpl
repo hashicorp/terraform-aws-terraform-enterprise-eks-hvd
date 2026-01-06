@@ -1,4 +1,4 @@
-replicaCount: 1
+replicaCount: 3
 tls:
   certificateSecret: <tfe-certs>
   caCertData: |
@@ -7,12 +7,13 @@ tls:
 image:
  repository: images.releases.hashicorp.com
  name: hashicorp/terraform-enterprise
- tag: <v202505-1> # refer to https://developer.hashicorp.com/terraform/enterprise/releases
+ tag: <1.0.2> # refer to https://developer.hashicorp.com/terraform/enterprise/releases
 
-resources:
-  requests:
-    memory: "4Gi"
-    cpu: "3000m"
+# lower resource requests/limits based on your node size
+# resources:
+#   requests:
+#     memory: "4Gi"
+#     cpu: "3000m"
 
 %{ if create_service_account ~}
 serviceAccount:
