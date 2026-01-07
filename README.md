@@ -266,16 +266,16 @@ Please note that there is no official Service Level Agreement (SLA) for support 
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.63 |
-| <a name="requirement_local"></a> [local](#requirement\_local) | 2.5.1 |
-| <a name="requirement_tls"></a> [tls](#requirement\_tls) | 4.0.5 |
+| <a name="requirement_local"></a> [local](#requirement\_local) | ~> 2.5 |
+| <a name="requirement_tls"></a> [tls](#requirement\_tls) | ~> 4.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 5.63 |
-| <a name="provider_local"></a> [local](#provider\_local) | 2.5.1 |
-| <a name="provider_tls"></a> [tls](#provider\_tls) | 4.0.5 |
+| <a name="provider_local"></a> [local](#provider\_local) | ~> 2.5 |
+| <a name="provider_tls"></a> [tls](#provider\_tls) | ~> 4.0 |
 
 ## Resources
 
@@ -358,7 +358,7 @@ Please note that there is no official Service Level Agreement (SLA) for support 
 | [aws_security_group_rule.tfe_lb_allow_all_egress_to_nodegroup](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.tfe_lb_allow_all_egress_to_sg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.tfe_lb_allow_ingress_443](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
-| [local_file.helm_overrides_values](https://registry.terraform.io/providers/hashicorp/local/2.5.1/docs/resources/file) | resource |
+| [local_file.helm_overrides_values](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
 | [aws_ami.tfe_eks_nodegroup_custom](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_ami.tfe_eks_nodegroup_default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
@@ -384,7 +384,7 @@ Please note that there is no official Service Level Agreement (SLA) for support 
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 | [aws_secretsmanager_secret_version.tfe_database_password](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret_version) | data source |
 | [aws_secretsmanager_secret_version.tfe_redis_password](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret_version) | data source |
-| [tls_certificate.tfe_eks](https://registry.terraform.io/providers/hashicorp/tls/4.0.5/docs/data-sources/certificate) | data source |
+| [tls_certificate.tfe_eks](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/data-sources/certificate) | data source |
 
 ## Inputs
 
@@ -422,7 +422,7 @@ Please note that there is no official Service Level Agreement (SLA) for support 
 | <a name="input_eks_nodegroup_ami_id"></a> [eks\_nodegroup\_ami\_id](#input\_eks\_nodegroup\_ami\_id) | ID of AMI to use for EKS node group. Required when `eks_nodegroup_ami_type` is `CUSTOM`. | `string` | `null` | no |
 | <a name="input_eks_nodegroup_ami_type"></a> [eks\_nodegroup\_ami\_type](#input\_eks\_nodegroup\_ami\_type) | Type of AMI to use for EKS node group. Must be set to `CUSTOM` when `eks_nodegroup_ami_id` is not `null`. | `string` | `"AL2023_x86_64_STANDARD"` | no |
 | <a name="input_eks_nodegroup_ebs_kms_key_arn"></a> [eks\_nodegroup\_ebs\_kms\_key\_arn](#input\_eks\_nodegroup\_ebs\_kms\_key\_arn) | ARN of KMS customer managed key (CMK) to encrypt EKS node group EBS volumes. | `string` | `null` | no |
-| <a name="input_eks_nodegroup_instance_type"></a> [eks\_nodegroup\_instance\_type](#input\_eks\_nodegroup\_instance\_type) | Instance type for worker nodes within EKS node group. | `string` | `"m7i.xlarge"` | no |
+| <a name="input_eks_nodegroup_instance_type"></a> [eks\_nodegroup\_instance\_type](#input\_eks\_nodegroup\_instance\_type) | Instance type for worker nodes within EKS node group. | `string` | `"m7i.2xlarge"` | no |
 | <a name="input_eks_nodegroup_name"></a> [eks\_nodegroup\_name](#input\_eks\_nodegroup\_name) | Name of EKS node group. | `string` | `"tfe-eks-nodegroup"` | no |
 | <a name="input_eks_nodegroup_scaling_config"></a> [eks\_nodegroup\_scaling\_config](#input\_eks\_nodegroup\_scaling\_config) | Scaling configuration for EKS node group. | `map(number)` | <pre>{<br/>  "desired_size": 3,<br/>  "max_size": 3,<br/>  "min_size": 2<br/>}</pre> | no |
 | <a name="input_eks_oidc_provider_arn"></a> [eks\_oidc\_provider\_arn](#input\_eks\_oidc\_provider\_arn) | ARN of existing OIDC provider for EKS cluster. Required when `create_eks_oidc_provider` is `false`. | `string` | `null` | no |
