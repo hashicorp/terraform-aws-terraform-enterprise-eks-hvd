@@ -105,7 +105,6 @@ variable "rds_subnet_ids" {
 variable "redis_subnet_ids" {
   type        = list(string)
   description = "List of subnet IDs to use for Redis cluster subnet group."
-  default     = null
 }
 
 variable "create_tfe_lb_security_group" {
@@ -684,7 +683,6 @@ variable "s3_destination_bucket_kms_key_arn" {
 variable "tfe_redis_password_secret_arn" {
   type        = string
   description = "ARN of AWS Secrets Manager secret for the TFE Redis password. Value of secret must contain from 16 to 128 alphanumeric characters or symbols (excluding @, \", and /)."
-  default     = null
 }
 
 variable "redis_engine_version" {
