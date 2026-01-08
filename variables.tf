@@ -339,7 +339,7 @@ variable "eks_nodegroup_name" {
 variable "eks_nodegroup_instance_type" {
   type        = string
   description = "Instance type for worker nodes within EKS node group."
-  default     = "m7i.xlarge"
+  default     = "m7i.2xlarge"
 }
 
 variable "eks_nodegroup_ami_type" {

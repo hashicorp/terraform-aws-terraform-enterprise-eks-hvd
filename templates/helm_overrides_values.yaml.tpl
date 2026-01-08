@@ -1,4 +1,4 @@
-replicaCount: 1
+replicaCount: 3
 tls:
   certificateSecret: <tfe-certs>
   caCertData: |
@@ -7,7 +7,13 @@ tls:
 image:
  repository: images.releases.hashicorp.com
  name: hashicorp/terraform-enterprise
- tag: <v202505-1> # refer to https://developer.hashicorp.com/terraform/enterprise/releases
+ tag: <1.0.2> # refer to https://developer.hashicorp.com/terraform/enterprise/releases
+
+# lower resource requests/limits based on your node size
+# resources:
+#   requests:
+#     memory: "4Gi"
+#     cpu: "3000m"
 
 %{ if create_service_account ~}
 serviceAccount:
@@ -34,6 +40,9 @@ service:
     service.beta.kubernetes.io/aws-load-balancer-scheme: "internal" # for an external LB, set to "internet-facing"
     service.beta.kubernetes.io/aws-load-balancer-subnets: "<list, of, lb_subnet_ids>" # TFE load balancer subnets, no brackets in annotation list
     service.beta.kubernetes.io/aws-load-balancer-security-groups: ${tfe_lb_security_groups}
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: "https"
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-path: "/_health_check"
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: "${tfe_https_port}"
   type: LoadBalancer
   port: 443
 
