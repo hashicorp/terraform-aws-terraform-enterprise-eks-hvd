@@ -5,10 +5,10 @@
 # S3 bucket
 #------------------------------------------------------------------------------
 resource "aws_s3_bucket" "tfe" {
-  bucket = "${var.friendly_name_prefix}-tfe-app-${data.aws_region.current.name}-${data.aws_caller_identity.current.account_id}"
+  bucket = "${var.friendly_name_prefix}-tfe-app-${data.aws_region.current.region}-${data.aws_caller_identity.current.account_id}"
 
   tags = merge(
-    { "Name" = "${var.friendly_name_prefix}-tfe-app-${data.aws_region.current.name}-${data.aws_caller_identity.current.account_id}" },
+    { "Name" = "${var.friendly_name_prefix}-tfe-app-${data.aws_region.current.region}-${data.aws_caller_identity.current.account_id}" },
     var.common_tags
   )
 
@@ -88,14 +88,14 @@ resource "aws_s3_bucket_replication_configuration" "tfe" {
 resource "aws_iam_role" "s3_crr" {
   count = var.s3_enable_bucket_replication && !var.is_secondary_region ? 1 : 0
 
-  name        = "${var.friendly_name_prefix}-tfe-s3-crr-iam-role-${data.aws_region.current.name}"
+  name        = "${var.friendly_name_prefix}-tfe-s3-crr-iam-role-${data.aws_region.current.region}"
   path        = "/"
   description = "Custom IAM role for TFE S3 bucket cross-region replication."
 
   assume_role_policy = data.aws_iam_policy_document.s3_crr_assume_role[0].json
 
   tags = merge(
-    { Name = "${var.friendly_name_prefix}-tfe-s3-crr-iam-role-${data.aws_region.current.name}" },
+    { Name = "${var.friendly_name_prefix}-tfe-s3-crr-iam-role-${data.aws_region.current.region}" },
     var.common_tags
   )
 
@@ -120,7 +120,7 @@ data "aws_iam_policy_document" "s3_crr_assume_role" {
 resource "aws_iam_policy" "s3_crr" {
   count = var.s3_enable_bucket_replication && !var.is_secondary_region ? 1 : 0
 
-  name        = "${var.friendly_name_prefix}-tfe-s3-crr-iam-policy-${data.aws_region.current.name}"
+  name        = "${var.friendly_name_prefix}-tfe-s3-crr-iam-policy-${data.aws_region.current.region}"
   description = "Custom IAM policy for TFE S3 bucket cross-region replication."
   policy      = data.aws_iam_policy_document.s3_crr[0].json
 }
@@ -216,7 +216,7 @@ data "aws_iam_policy_document" "s3_crr" {
 resource "aws_iam_policy_attachment" "s3_crr" {
   count = var.s3_enable_bucket_replication && !var.is_secondary_region ? 1 : 0
 
-  name       = "${var.friendly_name_prefix}-tfe-s3-crr-iam-policy-attach-${data.aws_region.current.name}"
+  name       = "${var.friendly_name_prefix}-tfe-s3-crr-iam-policy-attach-${data.aws_region.current.region}"
   roles      = [aws_iam_role.s3_crr[0].name]
   policy_arn = aws_iam_policy.s3_crr[0].arn
 }

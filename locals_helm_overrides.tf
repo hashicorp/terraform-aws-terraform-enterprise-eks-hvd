@@ -27,7 +27,7 @@ locals {
     # Object storage settings
     tfe_object_storage_type                                 = "s3"
     tfe_object_storage_s3_bucket                            = aws_s3_bucket.tfe.id
-    tfe_object_storage_s3_region                            = data.aws_region.current.name
+    tfe_object_storage_s3_region                            = data.aws_region.current.region
     tfe_object_storage_s3_endpoint                          = "" # needed for GovCloud?
     tfe_object_storage_s3_use_instance_profile              = var.tfe_object_storage_s3_use_instance_profile
     tfe_object_storage_s3_access_key_id                     = var.tfe_object_storage_s3_access_key_id == null ? "" : var.tfe_object_storage_s3_access_key_id
