@@ -7,14 +7,14 @@
 resource "aws_iam_role" "eks_cluster" {
   count = var.create_eks_cluster ? 1 : 0
 
-  name        = "${var.friendly_name_prefix}-tfe-eks-cluster-role-${data.aws_region.current.name}"
+  name        = "${var.friendly_name_prefix}-tfe-eks-cluster-role-${data.aws_region.current.region}"
   path        = "/"
   description = "IAM role for TFE EKS cluster."
 
   assume_role_policy = data.aws_iam_policy_document.eks_cluster_assume_role[0].json
 
   tags = merge(
-    { "Name" = "${var.friendly_name_prefix}-tfe-eks-cluster-role-${data.aws_region.current.name}" },
+    { "Name" = "${var.friendly_name_prefix}-tfe-eks-cluster-role-${data.aws_region.current.region}" },
     var.common_tags
   )
 
@@ -94,14 +94,14 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_vpc_resource_controller_p
 resource "aws_iam_role" "tfe_eks_nodegroup" {
   count = var.create_eks_cluster ? 1 : 0
 
-  name        = "${var.friendly_name_prefix}-tfe-eks-node-group-role-${data.aws_region.current.name}"
+  name        = "${var.friendly_name_prefix}-tfe-eks-node-group-role-${data.aws_region.current.region}"
   path        = "/"
   description = "IAM role for TFE EKS node group."
 
   assume_role_policy = data.aws_iam_policy_document.tfe_eks_nodegroup_assume_role[0].json
 
   tags = merge(
-    { "Name" = "${var.friendly_name_prefix}-tfe-eks-node-group-role-${data.aws_region.current.name}" },
+    { "Name" = "${var.friendly_name_prefix}-tfe-eks-node-group-role-${data.aws_region.current.region}" },
     var.common_tags
   )
 
@@ -147,7 +147,7 @@ resource "aws_iam_role_policy_attachment" "tfe_eks_nodegroup_container_registry_
 resource "aws_iam_policy" "tfe_eks_nodegroup_custom" {
   count = var.create_eks_cluster && var.eks_nodegroup_ebs_kms_key_arn != null ? 1 : 0
 
-  name        = "${var.friendly_name_prefix}-tfe-eks-node-group-custom-policy-${data.aws_region.current.name}"
+  name        = "${var.friendly_name_prefix}-tfe-eks-node-group-custom-policy-${data.aws_region.current.region}"
   description = "Custom IAM policy to grant TKE EKS node group access to KMS customer-managed key (CMK)."
   policy      = data.aws_iam_policy_document.tfe_eks_nodegroup_ebs_kms_cmk[0].json
 }
@@ -182,7 +182,7 @@ resource "aws_iam_role_policy_attachment" "tfe_eks_nodegroup_ebs_kms" {
 
 // Instance Profile not needed here because EKS/K8s will automatically create one itself based on the IAM role arn
 # resource "aws_iam_instance_profile" "eks_nodegroup" {
-#   name = "${var.friendly_name_prefix}-tfe-eks-node-group-instance-profile-${data.aws_region.current.name}"
+#   name = "${var.friendly_name_prefix}-tfe-eks-node-group-instance-profile-${data.aws_region.current.region}"
 #   role = aws_iam_role.eks_nodegroup.name
 # }
 
@@ -222,14 +222,14 @@ locals {
 resource "aws_iam_role" "tfe_irsa" {
   count = var.create_tfe_eks_irsa ? 1 : 0
 
-  name        = "${var.friendly_name_prefix}-tfe-eks-irsa-role-${data.aws_region.current.name}"
+  name        = "${var.friendly_name_prefix}-tfe-eks-irsa-role-${data.aws_region.current.region}"
   path        = "/"
   description = "IAM role for TFE IRSA with TFE EKS cluster OIDC provider."
 
   assume_role_policy = data.aws_iam_policy_document.tfe_irsa_assume_role[0].json
 
   tags = merge(
-    { "Name" = "${var.friendly_name_prefix}-tfe-eks-irsa-role-${data.aws_region.current.name}" },
+    { "Name" = "${var.friendly_name_prefix}-tfe-eks-irsa-role-${data.aws_region.current.region}" },
     var.common_tags
   )
 
@@ -269,7 +269,7 @@ data "aws_iam_policy_document" "tfe_irsa_assume_role" {
 resource "aws_iam_role" "tfe_pi" {
   count = var.create_tfe_eks_pod_identity ? 1 : 0
 
-  name        = "${var.friendly_name_prefix}-tfe-eks-pi-role-${data.aws_region.current.name}"
+  name        = "${var.friendly_name_prefix}-tfe-eks-pi-role-${data.aws_region.current.region}"
   path        = "/"
   description = "IAM role for TFE Pod Identity."
 
@@ -393,7 +393,7 @@ data "aws_iam_policy_document" "tfe_workload_identity_combined" {
 resource "aws_iam_policy" "tfe_workload_identity" {
   count = (var.create_tfe_eks_irsa || var.create_tfe_eks_pod_identity) ? 1 : 0
 
-  name        = "${var.friendly_name_prefix}-tfe-eks-irsa-policy-${data.aws_region.current.name}"
+  name        = "${var.friendly_name_prefix}-tfe-eks-irsa-policy-${data.aws_region.current.region}"
   description = "Custom IAM policy used to map TFE IAM role to TFE Kubernetes Service Account."
   policy      = data.aws_iam_policy_document.tfe_workload_identity_combined[0].json
 }
@@ -427,14 +427,14 @@ resource "aws_eks_pod_identity_association" "tfe_association" {
 resource "aws_iam_role" "aws_lb_controller_irsa" {
   count = var.create_aws_lb_controller_irsa ? 1 : 0
 
-  name        = "${var.friendly_name_prefix}-aws-lb-controller-irsa-role-${data.aws_region.current.name}"
+  name        = "${var.friendly_name_prefix}-aws-lb-controller-irsa-role-${data.aws_region.current.region}"
   path        = "/"
   description = "IAM role for AWS Load Balancer Controller IRSA with TFE EKS cluster OIDC provider."
 
   assume_role_policy = data.aws_iam_policy_document.aws_lb_controller_irsa_assume_role[0].json
 
   tags = merge(
-    { "Name" = "${var.friendly_name_prefix}-aws-lb-controller-irsa-role-${data.aws_region.current.name}" },
+    { "Name" = "${var.friendly_name_prefix}-aws-lb-controller-irsa-role-${data.aws_region.current.region}" },
     var.common_tags
   )
 
@@ -474,7 +474,7 @@ data "aws_iam_policy_document" "aws_lb_controller_irsa_assume_role" {
 resource "aws_iam_role" "aws_lb_pi" {
   count = var.create_aws_lb_controller_pod_identity ? 1 : 0
 
-  name        = "${var.friendly_name_prefix}-aws-lb-controller-pi-role-${data.aws_region.current.name}"
+  name        = "${var.friendly_name_prefix}-aws-lb-controller-pi-role-${data.aws_region.current.region}"
   path        = "/"
   description = "IAM role for AWS Loead Balancer Controller Pod Identity."
 

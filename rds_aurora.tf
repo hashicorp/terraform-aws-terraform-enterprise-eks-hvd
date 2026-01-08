@@ -39,7 +39,7 @@ resource "aws_rds_global_cluster" "tfe" {
 
 resource "aws_rds_cluster" "tfe" {
   global_cluster_identifier       = var.is_secondary_region ? var.rds_global_cluster_id : aws_rds_global_cluster.tfe[0].id
-  cluster_identifier              = "${var.friendly_name_prefix}-tfe-rds-cluster-${data.aws_region.current.name}"
+  cluster_identifier              = "${var.friendly_name_prefix}-tfe-rds-cluster-${data.aws_region.current.region}"
   engine                          = "aurora-postgresql"
   engine_mode                     = var.rds_aurora_engine_mode
   engine_version                  = var.rds_aurora_engine_version
@@ -59,10 +59,10 @@ resource "aws_rds_cluster" "tfe" {
   preferred_backup_window         = var.rds_preferred_backup_window
   preferred_maintenance_window    = var.rds_preferred_maintenance_window
   skip_final_snapshot             = var.rds_skip_final_snapshot
-  final_snapshot_identifier       = "${var.friendly_name_prefix}-tfe-rds-final-snapshot-${data.aws_region.current.name}"
+  final_snapshot_identifier       = "${var.friendly_name_prefix}-tfe-rds-final-snapshot-${data.aws_region.current.region}"
 
   tags = merge(
-    { "Name" = "${var.friendly_name_prefix}-tfe-rds-cluster-${data.aws_region.current.name}" },
+    { "Name" = "${var.friendly_name_prefix}-tfe-rds-cluster-${data.aws_region.current.region}" },
     { "Description" = "TFE RDS Aurora PostgreSQL database cluster." },
     { "is_secondary_region" = var.is_secondary_region },
     var.common_tags
@@ -95,13 +95,13 @@ resource "aws_rds_cluster_instance" "tfe" {
 }
 
 resource "aws_rds_cluster_parameter_group" "tfe" {
-  name        = "${var.friendly_name_prefix}-tfe-rds-cluster-parameter-group-${data.aws_region.current.name}"
+  name        = "${var.friendly_name_prefix}-tfe-rds-cluster-parameter-group-${data.aws_region.current.region}"
   family      = var.rds_parameter_group_family
   description = "TFE RDS Aurora PostgreSQL database cluster parameter group."
 }
 
 resource "aws_db_parameter_group" "tfe" {
-  name        = "${var.friendly_name_prefix}-tfe-rds-db-parameter-group-${data.aws_region.current.name}"
+  name        = "${var.friendly_name_prefix}-tfe-rds-db-parameter-group-${data.aws_region.current.region}"
   family      = var.rds_parameter_group_family
   description = "TFE RDS Aurora PostgreSQL database cluster instance parameter group."
 }
