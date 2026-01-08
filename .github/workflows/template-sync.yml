@@ -7,8 +7,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  issues: read
 
 jobs:
   sync:
-    uses: hashicorp/hvd-module-gha/.github/workflows/template-sync.yml@main
+    uses: hashicorp/hvd-module-gha/.github/workflows/template-sync.yml@template-sync
