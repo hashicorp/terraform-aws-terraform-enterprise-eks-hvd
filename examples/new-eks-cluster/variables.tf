@@ -422,7 +422,7 @@ variable "rds_deletion_protection" {
 variable "rds_aurora_engine_version" {
   type        = number
   description = "Engine version of RDS Aurora PostgreSQL."
-  default     = 16.2
+  default     = 16.8
 }
 
 variable "rds_force_destroy" {
