@@ -203,7 +203,7 @@ The next phase of the deployment is the application layer (referred to as the **
     kubectl get pods --namespace <TFE_NAMESPACE>
     ```
 
-    The default is to deploy 3 pods; view the logs from one the pods:
+    The default is to deploy 3 pods; view the logs from one of the pods:
 
     ```shell
     kubectl logs <TFE_POD_NAME> --namespace <TFE_NAMESPACE> -f
