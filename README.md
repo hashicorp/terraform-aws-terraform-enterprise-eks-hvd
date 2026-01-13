@@ -130,7 +130,7 @@ The next phase of the deployment is the application layer (referred to as the **
    >📝 Note: If you are running this command as an AWS identity *other than* the one that created the cluster, you will need to create additional [access entries](https://docs.aws.amazon.com/eks/latest/userguide/access-entries.html) similar to the ones created [here](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/main/eks_cluster.tf#L44)
 
 1. AWS recommends installing the AWS load balancer controller for EKS. If it is not already installed in your EKS cluster, install the AWS load balancer controller within the `kube-system` namespace via the Helm chart:
-   
+
    Add the AWS `eks-charts` Helm chart repository:
 
    ```shell
@@ -162,7 +162,7 @@ The next phase of the deployment is the application layer (referred to as the **
 
 
 1. Create the Kubernetes namespace for TFE:
-   
+
    ```sh
    kubectl create namespace tfe
    ```
@@ -197,13 +197,13 @@ The next phase of the deployment is the application layer (referred to as the **
     kubectl get events --namespace <TFE_NAMESPACE>
     ```
 
-    View the pods within the namespace:
+    View the pods within the TFE namespace:
 
     ```shell
     kubectl get pods --namespace <TFE_NAMESPACE>
     ```
 
-    View the logs from the pod:
+    The default is to deploy 3 pods; view the logs from one of the pods:
 
     ```shell
     kubectl logs <TFE_POD_NAME> --namespace <TFE_NAMESPACE> -f
