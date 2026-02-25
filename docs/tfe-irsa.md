@@ -9,14 +9,14 @@ If you choose to create the TFE IAM Role for Service Account (IRSA) outside of t
 resource "aws_iam_role" "tfe_irsa" {
   count = var.create_tfe_eks_irsa ? 1 : 0
 
-  name        = "${var.friendly_name_prefix}-tfe-eks-irsa-role-${data.aws_region.current.name}"
+  name        = "${var.friendly_name_prefix}-tfe-eks-irsa-role-${data.aws_region.current.region}"
   path        = "/"
   description = "IAM role for TFE IRSA with TFE EKS cluster OIDC provider."
 
   assume_role_policy = data.aws_iam_policy_document.tfe_irsa_assume_role[0].json
 
   tags = merge(
-    { "Name" = "${var.friendly_name_prefix}-tfe-eks-irsa-role-${data.aws_region.current.name}" },
+    { "Name" = "${var.friendly_name_prefix}-tfe-eks-irsa-role-${data.aws_region.current.region}" },
     var.common_tags
   )
 }
@@ -149,7 +149,7 @@ data "aws_iam_policy_document" "tfe_irsa_combined" {
 resource "aws_iam_policy" "tfe_irsa" {
   count = var.create_tfe_eks_irsa ? 1 : 0
 
-  name        = "${var.friendly_name_prefix}-tfe-eks-irsa-policy-${data.aws_region.current.name}"
+  name        = "${var.friendly_name_prefix}-tfe-eks-irsa-policy-${data.aws_region.current.region}"
   description = "Custom IAM policy used to map TFE IAM role to TFE Kubernetes Service Account."
   policy      = data.aws_iam_policy_document.tfe_irsa_combined[0].json
 }

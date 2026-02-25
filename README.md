@@ -115,6 +115,10 @@ One of the following logging destinations:
 
 ## Post steps
 
+**At this point, the Terraform-managed infrastructure resources for TFE have been created.**
+
+The next phase of the deployment is the application layer (referred to as the **Post Steps**). This phase involves interacting with your EKS cluster using `kubectl` and installing the TFE application using `helm`. The steps are documented using these CLI tools as a baseline; equivalent Kubernetes tooling or workflows may be used as appropriate.
+
 1. Authenticate to your EKS cluster:
 
    ```shell
@@ -126,7 +130,7 @@ One of the following logging destinations:
    >📝 Note: If you are running this command as an AWS identity *other than* the one that created the cluster, you will need to create additional [access entries](https://docs.aws.amazon.com/eks/latest/userguide/access-entries.html) similar to the ones created [here](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/main/eks_cluster.tf#L44)
 
 1. AWS recommends installing the AWS load balancer controller for EKS. If it is not already installed in your EKS cluster, install the AWS load balancer controller within the `kube-system` namespace via the Helm chart:
-   
+
    Add the AWS `eks-charts` Helm chart repository:
 
    ```shell
@@ -158,7 +162,7 @@ One of the following logging destinations:
 
 
 1. Create the Kubernetes namespace for TFE:
-   
+
    ```sh
    kubectl create namespace tfe
    ```
@@ -193,13 +197,13 @@ One of the following logging destinations:
     kubectl get events --namespace <TFE_NAMESPACE>
     ```
 
-    View the pods within the namespace:
+    View the pods within the TFE namespace:
 
     ```shell
     kubectl get pods --namespace <TFE_NAMESPACE>
     ```
 
-    View the logs from the pod:
+    The default is to deploy 3 pods; view the logs from one of the pods:
 
     ```shell
     kubectl logs <TFE_POD_NAME> --namespace <TFE_NAMESPACE> -f
@@ -261,17 +265,17 @@ Please note that there is no official Service Level Agreement (SLA) for support 
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.63 |
-| <a name="requirement_local"></a> [local](#requirement\_local) | 2.5.1 |
-| <a name="requirement_tls"></a> [tls](#requirement\_tls) | 4.0.5 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 6.0 |
+| <a name="requirement_local"></a> [local](#requirement\_local) | ~> 2.5 |
+| <a name="requirement_tls"></a> [tls](#requirement\_tls) | ~> 4.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 5.63 |
-| <a name="provider_local"></a> [local](#provider\_local) | 2.5.1 |
-| <a name="provider_tls"></a> [tls](#provider\_tls) | 4.0.5 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 6.0 |
+| <a name="provider_local"></a> [local](#provider\_local) | ~> 2.5 |
+| <a name="provider_tls"></a> [tls](#provider\_tls) | ~> 4.0 |
 
 ## Resources
 
@@ -354,7 +358,7 @@ Please note that there is no official Service Level Agreement (SLA) for support 
 | [aws_security_group_rule.tfe_lb_allow_all_egress_to_nodegroup](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.tfe_lb_allow_all_egress_to_sg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.tfe_lb_allow_ingress_443](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
-| [local_file.helm_overrides_values](https://registry.terraform.io/providers/hashicorp/local/2.5.1/docs/resources/file) | resource |
+| [local_file.helm_overrides_values](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
 | [aws_ami.tfe_eks_nodegroup_custom](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_ami.tfe_eks_nodegroup_default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
@@ -380,7 +384,7 @@ Please note that there is no official Service Level Agreement (SLA) for support 
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 | [aws_secretsmanager_secret_version.tfe_database_password](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret_version) | data source |
 | [aws_secretsmanager_secret_version.tfe_redis_password](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret_version) | data source |
-| [tls_certificate.tfe_eks](https://registry.terraform.io/providers/hashicorp/tls/4.0.5/docs/data-sources/certificate) | data source |
+| [tls_certificate.tfe_eks](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/data-sources/certificate) | data source |
 
 ## Inputs
 
@@ -418,7 +422,7 @@ Please note that there is no official Service Level Agreement (SLA) for support 
 | <a name="input_eks_nodegroup_ami_id"></a> [eks\_nodegroup\_ami\_id](#input\_eks\_nodegroup\_ami\_id) | ID of AMI to use for EKS node group. Required when `eks_nodegroup_ami_type` is `CUSTOM`. | `string` | `null` | no |
 | <a name="input_eks_nodegroup_ami_type"></a> [eks\_nodegroup\_ami\_type](#input\_eks\_nodegroup\_ami\_type) | Type of AMI to use for EKS node group. Must be set to `CUSTOM` when `eks_nodegroup_ami_id` is not `null`. | `string` | `"AL2023_x86_64_STANDARD"` | no |
 | <a name="input_eks_nodegroup_ebs_kms_key_arn"></a> [eks\_nodegroup\_ebs\_kms\_key\_arn](#input\_eks\_nodegroup\_ebs\_kms\_key\_arn) | ARN of KMS customer managed key (CMK) to encrypt EKS node group EBS volumes. | `string` | `null` | no |
-| <a name="input_eks_nodegroup_instance_type"></a> [eks\_nodegroup\_instance\_type](#input\_eks\_nodegroup\_instance\_type) | Instance type for worker nodes within EKS node group. | `string` | `"m7i.xlarge"` | no |
+| <a name="input_eks_nodegroup_instance_type"></a> [eks\_nodegroup\_instance\_type](#input\_eks\_nodegroup\_instance\_type) | Instance type for worker nodes within EKS node group. | `string` | `"m7i.2xlarge"` | no |
 | <a name="input_eks_nodegroup_name"></a> [eks\_nodegroup\_name](#input\_eks\_nodegroup\_name) | Name of EKS node group. | `string` | `"tfe-eks-nodegroup"` | no |
 | <a name="input_eks_nodegroup_scaling_config"></a> [eks\_nodegroup\_scaling\_config](#input\_eks\_nodegroup\_scaling\_config) | Scaling configuration for EKS node group. | `map(number)` | <pre>{<br/>  "desired_size": 3,<br/>  "max_size": 3,<br/>  "min_size": 2<br/>}</pre> | no |
 | <a name="input_eks_oidc_provider_arn"></a> [eks\_oidc\_provider\_arn](#input\_eks\_oidc\_provider\_arn) | ARN of existing OIDC provider for EKS cluster. Required when `create_eks_oidc_provider` is `false`. | `string` | `null` | no |
@@ -430,7 +434,7 @@ Please note that there is no official Service Level Agreement (SLA) for support 
 | <a name="input_is_secondary_region"></a> [is\_secondary\_region](#input\_is\_secondary\_region) | Boolean indicating whether this TFE deployment is in the 'primary' region or 'secondary' region. | `bool` | `false` | no |
 | <a name="input_rds_apply_immediately"></a> [rds\_apply\_immediately](#input\_rds\_apply\_immediately) | Boolean to apply changes immediately to RDS cluster instance. | `bool` | `true` | no |
 | <a name="input_rds_aurora_engine_mode"></a> [rds\_aurora\_engine\_mode](#input\_rds\_aurora\_engine\_mode) | RDS Aurora database engine mode. | `string` | `"provisioned"` | no |
-| <a name="input_rds_aurora_engine_version"></a> [rds\_aurora\_engine\_version](#input\_rds\_aurora\_engine\_version) | Engine version of RDS Aurora PostgreSQL. | `number` | `16.2` | no |
+| <a name="input_rds_aurora_engine_version"></a> [rds\_aurora\_engine\_version](#input\_rds\_aurora\_engine\_version) | Engine version of RDS Aurora PostgreSQL. | `number` | `16.8` | no |
 | <a name="input_rds_aurora_instance_class"></a> [rds\_aurora\_instance\_class](#input\_rds\_aurora\_instance\_class) | Instance class of Aurora PostgreSQL database. | `string` | `"db.r6i.xlarge"` | no |
 | <a name="input_rds_aurora_replica_count"></a> [rds\_aurora\_replica\_count](#input\_rds\_aurora\_replica\_count) | Number of replica (reader) cluster instances to create within the RDS Aurora database cluster (within the same region). | `number` | `1` | no |
 | <a name="input_rds_availability_zones"></a> [rds\_availability\_zones](#input\_rds\_availability\_zones) | List of AWS availability zones to spread Aurora database cluster instances across. Leave as `null` and RDS will automatically assign 3 availability zones. | `list(string)` | `null` | no |
