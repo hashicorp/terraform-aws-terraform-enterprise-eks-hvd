@@ -228,7 +228,10 @@ The next phase of the deployment is the application layer (referred to as the **
 1. Verify the TFE application is ready:
 
     ```shell
+		# prior to release 1.2.1
     curl https://<TFE_FQDN>/_health_check
+		# post 1.2.1 https://developer.hashicorp.com/terraform/enterprise/api-docs/readiness#sample-request
+	  curl https://<TFE_FQDN>/api/v1/health/readiness?timeout=45
     ```
 
 1. Follow the remaining steps [here](https://developer.hashicorp.com/terraform/enterprise/flexible-deployments/install/kubernetes/install#4-create-initial-admin-user) to finish the installation setup, which involves creating the **initial admin user**.

@@ -7,7 +7,7 @@ tls:
 image:
  repository: images.releases.hashicorp.com
  name: hashicorp/terraform-enterprise
- tag: <1.0.2> # refer to https://developer.hashicorp.com/terraform/enterprise/releases
+ tag: <1.2.1> # refer to https://developer.hashicorp.com/terraform/enterprise/releases
 
 # lower resource requests/limits based on your node size
 # resources:
@@ -41,7 +41,8 @@ service:
     service.beta.kubernetes.io/aws-load-balancer-subnets: "<list, of, lb_subnet_ids>" # TFE load balancer subnets, no brackets in annotation list
     service.beta.kubernetes.io/aws-load-balancer-security-groups: ${tfe_lb_security_groups}
     service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: "https"
-    service.beta.kubernetes.io/aws-load-balancer-healthcheck-path: "/_health_check"
+    # service.beta.kubernetes.io/aws-load-balancer-healthcheck-path: "/_health_check" # prior to releae 1.2.1
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-path: "/api/v1/health/readiness" # as of release 1.2.1, the health check path was updated to match the TFE API health endpoint
     service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: "${tfe_https_port}"
   type: LoadBalancer
   port: 443
@@ -49,7 +50,7 @@ service:
 env:
   secretRefs:
     - name: <tfe-secrets>
-  
+
   variables:
     # TFE configuration settings
     TFE_HOSTNAME: ${tfe_hostname}
@@ -64,7 +65,7 @@ env:
     TFE_OBJECT_STORAGE_TYPE: ${tfe_object_storage_type}
     TFE_OBJECT_STORAGE_S3_BUCKET: ${tfe_object_storage_s3_bucket}
     TFE_OBJECT_STORAGE_S3_REGION: ${tfe_object_storage_s3_region}
-%{ if tfe_object_storage_s3_endpoint != "" ~}    
+%{ if tfe_object_storage_s3_endpoint != "" ~}
     TFE_OBJECT_STORAGE_S3_ENDPOINT: ${tfe_object_storage_s3_endpoint}
 %{ endif ~}
     TFE_OBJECT_STORAGE_S3_USE_INSTANCE_PROFILE: ${tfe_object_storage_s3_use_instance_profile}
@@ -79,4 +80,3 @@ env:
     TFE_REDIS_HOST: ${tfe_redis_host}
     TFE_REDIS_USE_AUTH: ${tfe_redis_use_auth}
     TFE_REDIS_USE_TLS: ${tfe_redis_use_tls}
-    
