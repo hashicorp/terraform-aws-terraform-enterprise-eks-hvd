@@ -1,5 +1,6 @@
 # Copyright IBM Corp. 2024, 2025
 # SPDX-License-Identifier: MPL-2.0
+# Please do NOT deploy in public subnets due to security concerns 
 
 #------------------------------------------------------------------------------
 # EKS node group
@@ -37,7 +38,7 @@ resource "aws_eks_node_group" "tfe" {
 }
 
 #------------------------------------------------------------------------------
-# Launch template
+# Launch template 
 #------------------------------------------------------------------------------
 data "aws_ami" "tfe_eks_nodegroup_custom" {
   count = var.eks_nodegroup_ami_id != null ? 1 : 0
