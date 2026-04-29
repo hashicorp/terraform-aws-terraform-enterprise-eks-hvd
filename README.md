@@ -151,9 +151,10 @@ The next phase of the deployment is the application layer (referred to as the **
     --set clusterName=<eks-cluster-name> \
     --set serviceAccount.create=true \
     --set serviceAccount.name=aws-load-balancer-controller \
-    --set serviceAccount.annotations."eks\.amazonaws\.com/role-arn"=<aws_lb_controller_irsa_role_arn> \
+    --set serviceAccount.annotations."eks\.amazonaws\.com role-arn"=<aws_lb_controller_irsa_role_arn> \
     --set region=<aws-region> \
     --set vpcId=<vpc-id>
+
    ```
 
    >📝 Note: You can get the value of your AWS load balancer controller IRSA role ARN from the `aws_lb_controller_irsa_role_arn` Terraform output (if `create_aws_lb_controller_irsa` was `true`).
