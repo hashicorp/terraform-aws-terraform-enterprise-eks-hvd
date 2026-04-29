@@ -1,5 +1,6 @@
 # Copyright IBM Corp. 2024, 2025
 # SPDX-License-Identifier: MPL-2.0
+# Please do NOT deploy in public subnets due to security concerns
 
 #------------------------------------------------------------------------------
 # EKS node group
