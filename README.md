@@ -25,6 +25,8 @@ Terraform module aligned with HashiCorp Validated Designs (HVD) to deploy Terraf
 - (Optional) S3 VPC Endpoint configured within VPC
 - (Optional) AWS Route53 Hosted Zone for TFE DNS record creation
 - Chosen fully qualified domain name (FQDN) for TFE (_e.g._ `tfe.aws.example.com`)
+- Do not deploy on public subnets because it is risky and not secure; deploy on private subnets 
+  - Here is a help guide distinguishing between private and public subnets [IP addressing for your VPCs and subnets](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-ip-addressing.html)
 
 #### Security groups
 
