@@ -25,6 +25,8 @@ Terraform module aligned with HashiCorp Validated Designs (HVD) to deploy Terraf
 - (Optional) S3 VPC Endpoint configured within VPC
 - (Optional) AWS Route53 Hosted Zone for TFE DNS record creation
 - Chosen fully qualified domain name (FQDN) for TFE (_e.g._ `tfe.aws.example.com`)
+- Do not deploy on public subnets because it is risky and not secure; deploy on private subnets 
+  - Here is a help guide distinguishing between private and public subnets [IP addressing for your VPCs and subnets](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-ip-addressing.html)
 
 #### Security groups
 
@@ -151,7 +153,7 @@ The next phase of the deployment is the application layer (referred to as the **
     --set clusterName=<eks-cluster-name> \
     --set serviceAccount.create=true \
     --set serviceAccount.name=aws-load-balancer-controller \
-    --set serviceAccount.annotations."eks\.amazonaws\.com/role-arn"=<aws-lb-controller-irsa-role-arn> \
+    --set serviceAccount.annotations."eks\.amazonaws\.com/role-arn"=<aws_lb_controller_irsa_role_arn> \
     --set region=<aws-region> \
     --set vpcId=<vpc-id>
    ```
@@ -266,7 +268,7 @@ Please note that there is no official Service Level Agreement (SLA) for support 
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 6.0 |
 | <a name="requirement_local"></a> [local](#requirement\_local) | ~> 2.5 |
@@ -275,7 +277,7 @@ Please note that there is no official Service Level Agreement (SLA) for support 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 6.0 |
 | <a name="provider_local"></a> [local](#provider\_local) | ~> 2.5 |
 | <a name="provider_tls"></a> [tls](#provider\_tls) | ~> 4.0 |
@@ -283,7 +285,7 @@ Please note that there is no official Service Level Agreement (SLA) for support 
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [aws_db_parameter_group.tfe](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_parameter_group) | resource |
 | [aws_db_subnet_group.tfe](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_subnet_group) | resource |
 | [aws_eks_access_entry.tfe_cluster_creator](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_access_entry) | resource |
@@ -392,7 +394,7 @@ Please note that there is no official Service Level Agreement (SLA) for support 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_friendly_name_prefix"></a> [friendly\_name\_prefix](#input\_friendly\_name\_prefix) | Friendly name prefix used for uniquely naming all AWS resources for this deployment. Most commonly set to either an environment (e.g. 'sandbox', 'prod') a team name, or a project name. | `string` | n/a | yes |
 | <a name="input_rds_subnet_ids"></a> [rds\_subnet\_ids](#input\_rds\_subnet\_ids) | List of subnet IDs to use for RDS database subnet group. | `list(string)` | n/a | yes |
 | <a name="input_redis_subnet_ids"></a> [redis\_subnet\_ids](#input\_redis\_subnet\_ids) | List of subnet IDs to use for Redis cluster subnet group. | `list(string)` | n/a | yes |
@@ -491,7 +493,7 @@ Please note that there is no official Service Level Agreement (SLA) for support 
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_aws_lb_controller_irsa_role_arn"></a> [aws\_lb\_controller\_irsa\_role\_arn](#output\_aws\_lb\_controller\_irsa\_role\_arn) | ARN of IAM role for AWS Load Balancer Controller IRSA. |
 | <a name="output_eks_cluster_name"></a> [eks\_cluster\_name](#output\_eks\_cluster\_name) | Name of TFE EKS cluster. |
 | <a name="output_eks_cluster_security_group_id"></a> [eks\_cluster\_security\_group\_id](#output\_eks\_cluster\_security\_group\_id) | ID of the default cluster security group created by EKS. |
