@@ -101,7 +101,7 @@ data "aws_iam_policy_document" "tfe_irsa_rds_kms_cmk" {
 }
 
 data "aws_iam_policy_document" "tfe_irsa_s3_kms_cmk" {
-  count = var.create_tfe_eks_irsa && var.rds_kms_key_arn != null ? 1 : 0
+  count = var.create_tfe_eks_irsa && var.s3_kms_key_arn != null ? 1 : 0
 
   statement {
     sid    = "TfeIrsaAllowS3KmsCmk"
