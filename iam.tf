@@ -345,7 +345,7 @@ data "aws_iam_policy_document" "tfe_workload_identity_rds_kms_cmk" {
 }
 
 data "aws_iam_policy_document" "tfe_workload_identity_s3_kms_cmk" {
-  count = (var.create_tfe_eks_irsa || var.create_tfe_eks_pod_identity) && var.rds_kms_key_arn != null ? 1 : 0
+  count = (var.create_tfe_eks_irsa || var.create_tfe_eks_pod_identity) && var.s3_kms_key_arn != null ? 1 : 0
 
   statement {
     sid    = "Tfe${local.workload_identity_type}AllowS3KmsCmk"

@@ -133,6 +133,20 @@ run "pod_identity_options_creates_addon_and_iam" {
   }
 }
 
+run "s3_kms_without_rds_kms_creates_workload_identity_policy" {
+  command = plan
+
+  variables {
+    rds_kms_key_arn = null
+    s3_kms_key_arn  = "arn:aws:kms:us-west-2:123456780000:key/12345678-1234-1234-1234-123456789012"
+  }
+
+  assert {
+    condition     = length(data.aws_iam_policy_document.tfe_workload_identity_s3_kms_cmk) == 1
+    error_message = "TFE workload identity S3 KMS policy document should be created when s3_kms_key_arn is set, even when rds_kms_key_arn is null."
+  }
+}
+
 run "no_tfe_pod_identity_option_no_addon" {
   command = plan
 
