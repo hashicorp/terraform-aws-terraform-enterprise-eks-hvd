@@ -96,16 +96,20 @@ One of the following logging destinations:
         │   ├── main.tf
         │   ├── outputs.tf
         │   ├── terraform.tfvars
-        │   └── variables.tf
+        │   ├── variables.tf
+        │   └── variables_provider.tf
         └── sandbox
             ├── backend.tf
             ├── main.tf
             ├── outputs.tf
             ├── terraform.tfvars
-            └── variables.tf
+            ├── variables.tf
+            └── variables_provider.tf
     ```
 
     >📝 Note: In this example, the user will have two separate TFE deployments; one for their `sandbox` environment, and one for their `production` environment. This is recommended, but not required.
+
+    >📝 Note: `variables_provider.tf` defines provider configuration variables (not module variables) and must be copied from the examples directory.
 
 1. (Optional) Uncomment and update the [S3 remote state backend](https://developer.hashicorp.com/terraform/language/settings/backends/s3) configuration provided in the `backend.tf` file with your own custom values. While this step is highly recommended, it is technically not required to use a remote backend config for your TFE deployment (if you are in a sandbox environment, for example).
 
