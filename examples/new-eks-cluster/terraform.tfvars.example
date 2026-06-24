@@ -30,7 +30,7 @@ create_tfe_eks_irsa           = true
 # --- EKS --- #
 create_eks_cluster                 = true
 eks_cluster_endpoint_public_access = <false>
-eks_cluster_public_access_cidrs    = ["0.0.0.0/0"]
+eks_cluster_public_access_cidrs    = ["<0.0.0.0/0>"] # Ignored unless eks_cluster_endpoint_public_access  set to true
 
 # --- Database --- #
 tfe_database_password_secret_arn = "<my-database-password-secret-arn>"
