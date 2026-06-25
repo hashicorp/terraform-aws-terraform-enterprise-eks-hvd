@@ -29,6 +29,9 @@ create_tfe_eks_irsa           = true
 
 # --- EKS --- #
 create_eks_cluster                 = true
+# Public API endpoint is disabled by default (private access only).
+# To enable it, set `eks_cluster_endpoint_public_access = true` and provide
+# the allowed source CIDR(s) below, e.g. ["203.0.113.0/24"].
 eks_cluster_endpoint_public_access = <false>
 eks_cluster_public_access_cidrs    = ["<0.0.0.0/0>"] # Ignored unless eks_cluster_endpoint_public_access  set to true
 
