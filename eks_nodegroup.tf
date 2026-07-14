@@ -76,6 +76,17 @@ data "aws_ami" "tfe_eks_nodegroup_default" {
   }
 }
 
+locals {
+  # `var.eks_nodegroup_user_data` is either `null` or a path to a Terraform template file (`.tftpl`/`.tpl`) that is
+  # rendered with the EKS cluster's certificate authority data and endpoint DNS name, then base64-encoded for use as
+  # the launch template's `user_data`. When `null`, no `user_data` is applied and the AMI's default bootstrap
+  # behavior is used.
+  eks_nodegroup_user_data_rendered = var.create_eks_cluster && var.eks_nodegroup_user_data != null ? base64encode(templatefile(var.eks_nodegroup_user_data, {
+    cluster_certificate_authority_data = aws_eks_cluster.tfe[0].certificate_authority[0].data
+    cluster_endpoint                   = "${aws_eks_cluster.tfe[0].name}.${data.aws_region.current.region}.eks.amazonaws.com"
+  })) : null
+}
+
 resource "aws_launch_template" "tfe_eks_nodegroup" {
   count = var.create_eks_cluster ? 1 : 0
 
@@ -103,7 +114,7 @@ resource "aws_launch_template" "tfe_eks_nodegroup" {
 
   ebs_optimized = true
 
-  user_data = var.eks_nodegroup_user_data
+  user_data = local.eks_nodegroup_user_data_rendered
 
   // https://support.hashicorp.com/hc/en-us/articles/35213717169427-Terraform-Enterprise-FDO-fails-to-start-with-EKS-version-1-30
   metadata_options {

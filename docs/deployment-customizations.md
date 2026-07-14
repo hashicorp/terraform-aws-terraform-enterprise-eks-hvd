@@ -72,13 +72,29 @@ eks_nodegroup_ami_id   = "<my-custom-ami-id>"
 
 >📝 Note: The launch template always enforces IMDSv2 (`http_tokens = "required"`) and encrypts the root EBS volume by default. To encrypt the EBS volume with a customer-managed KMS key instead of the AWS-managed key, see the [KMS](#kms) section below.
 
-To run custom bootstrap logic on worker nodes at launch (_e.g._ additional `containerd`/`kubelet` configuration, custom `nodeadm`/bootstrap scripts, host hardening), set `eks_nodegroup_user_data` to your base64-encoded user data:
+To run custom bootstrap logic on worker nodes at launch (_e.g._ additional `containerd`/`kubelet` configuration, custom `nodeadm`/bootstrap scripts, host hardening), set `eks_nodegroup_user_data` to the path of a Terraform template file (`.tftpl` or `.tpl` extension):
 
 ```hcl
-eks_nodegroup_user_data = base64encode(file("${path.module}/my-nodegroup-user-data.sh"))
+eks_nodegroup_user_data = "${path.module}/templates/my-nodegroup-user-data.sh.tftpl"
 ```
 
->📝 Note: `eks_nodegroup_user_data` defaults to `null`. When left `null`, no `user_data` argument is applied to the `aws_launch_template` resource and the selected AMI's default bootstrap behavior is used unmodified.
+The module renders the template via `templatefile()` and automatically base64-encodes the result before applying it as the launch template's `user_data`, so your template must contain the raw (non-base64) user data content. Two variables are available for interpolation inside the template:
+
+| Template variable | Description |
+|---|---|
+| `cluster_certificate_authority_data` | Base64-encoded certificate authority data for the EKS cluster (from `aws_eks_cluster.tfe[0].certificate_authority[0].data`). |
+| `cluster_endpoint` | `<eks-cluster-name>.<region>.eks.amazonaws.com`, derived from the created `aws_eks_cluster.tfe` resource name and the current AWS region. |
+
+Example template file:
+
+```sh
+#!/bin/bash
+# my-nodegroup-user-data.sh.tftpl
+echo "${cluster_certificate_authority_data}" | base64 -d > /etc/kubernetes/pki/ca.crt
+echo "Bootstrapping against ${cluster_endpoint}"
+```
+
+>📝 Note: `eks_nodegroup_user_data` defaults to `null`. When left `null`, no `user_data` argument is applied to the `aws_launch_template` resource and the selected AMI's default bootstrap behavior is used unmodified. When set, the value must be `null` or a path to an existing file with a `.tftpl` or `.tpl` extension; other values fail variable validation.
 
 ### IAM roles for service accounts (IRSA) vs. Pod Identity
 

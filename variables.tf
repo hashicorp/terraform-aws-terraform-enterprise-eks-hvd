@@ -377,8 +377,18 @@ variable "eks_nodegroup_ebs_kms_key_arn" {
 
 variable "eks_nodegroup_user_data" {
   type        = string
-  description = "Base64-encoded user data to apply to the EKS node group launch template (e.g. via `base64encode()`). When `null`, no `user_data` is applied to the launch template and the AMI's default bootstrap behavior is used."
+  description = "Path to a Terraform template file (`.tftpl` or `.tpl` extension) used to generate the user data applied to the EKS node group launch template. The template is rendered with two variables available for interpolation: `cluster_certificate_authority_data` (the EKS cluster's base64-encoded certificate authority data) and `cluster_endpoint` (`<eks-cluster-name>.<region>.eks.amazonaws.com`, derived from the `aws_eks_cluster.tfe` resource). The rendered result is base64-encoded automatically before being applied as `user_data`. When `null`, no `user_data` is applied to the launch template and the AMI's default bootstrap behavior is used."
   default     = null
+
+  validation {
+    condition     = var.eks_nodegroup_user_data == null || can(regex("\\.(tftpl|tpl)$", var.eks_nodegroup_user_data))
+    error_message = "`eks_nodegroup_user_data` must be `null` or a path to a template file with a `.tftpl` or `.tpl` extension."
+  }
+
+  validation {
+    condition     = var.eks_nodegroup_user_data == null || fileexists(var.eks_nodegroup_user_data)
+    error_message = "`eks_nodegroup_user_data` must be `null` or a path to a file that exists."
+  }
 }
 
 #------------------------------------------------------------------------------
