@@ -15,7 +15,7 @@ Set `create_eks_cluster` to choose which pattern applies:
 create_eks_cluster = true # `true` to create a new EKS cluster and node group; `false` to bring your own existing EKS cluster
 ```
 
->📝 Note: See the [`new-eks-cluster`](../examples/new-eks-cluster/) and [`existing-eks-cluster`](../examples/existing-eks-cluster/) example directories for complete, runnable configurations of each pattern.
+>📝 Note: See the [`new-eks-cluster`](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.3.0/examples/new-eks-cluster/) and [`existing-eks-cluster`](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.3.0/examples/existing-eks-cluster/) example directories for complete, runnable configurations of each pattern.
 
 ### New EKS cluster
 
@@ -41,7 +41,7 @@ create_eks_cluster        = false
 existing_eks_cluster_name = "<my-existing-eks-cluster-name>"
 ```
 
-Because the module does not manage the cluster or node group's security groups in this scenario, you are responsible for ensuring the ingress/egress rules described in the module [README](../README.md#security-groups) are satisfied on your own node group/pod security groups. Use the following variables to wire the TFE load balancer security group (managed by this module) to your existing node group/pod security group:
+Because the module does not manage the cluster or node group's security groups in this scenario, you are responsible for ensuring the ingress/egress rules described in the module [README](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.3.0/README.md#security-groups) are satisfied on your own node group/pod security groups. Use the following variables to wire the TFE load balancer security group (managed by this module) to your existing node group/pod security group:
 
 ```hcl
 cidr_allow_egress_from_tfe_lb = ["<tfe-pod-cidr-range>"] # only when bringing your own EKS cluster; must be `null` when `create_eks_cluster` is `true`
