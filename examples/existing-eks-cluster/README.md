@@ -1,14 +1,14 @@
 # Example: Existing EKS Cluster
 
-This directory contains a ready-made Terraform configuration and an [example terraform.tfvars file](./terraform.tfvars.example) for deploying TFE supporting infrastructure against an **existing EKS cluster**. It provisions the same AWS infrastructure as the [new-eks-cluster](../new-eks-cluster) example (RDS, Redis, S3, IAM, Security Groups) but does **not** create an EKS cluster or node group.
+This directory contains a ready-made Terraform configuration and an [example terraform.tfvars file](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.3.0/examples/existing-eks-cluster/terraform.tfvars.example) for deploying TFE supporting infrastructure against an **existing EKS cluster**. It provisions the same AWS infrastructure as the [new-eks-cluster](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.3.0/examples/new-eks-cluster) example (RDS, Redis, S3, IAM, Security Groups) but does **not** create an EKS cluster or node group.
 
 > 📝 Note: This module provisions the AWS infrastructure layer only. The TFE application itself is installed separately via `helm` in the post-deployment steps and is not managed by Terraform.
 
-For prerequisites, architectural decisions, and post-deployment steps, refer to the [new-eks-cluster README](../new-eks-cluster/README.md). For a full list of input variables and outputs, refer to the [root module README](../../README.md#inputs). The sections below cover only what differs in this example.
+For prerequisites, architectural decisions, and post-deployment steps, refer to the [new-eks-cluster README](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.3.0/examples/new-eks-cluster/README.md). For a full list of input variables and outputs, refer to the [root module README](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.3.0/README.md#inputs). The sections below cover only what differs in this example.
 
 ## When to Use This Example
 
-Use this example when your EKS cluster is already provisioned and managed separately (e.g., by a platform or infrastructure team). If you want this module to also create the EKS cluster and node group, use the [new-eks-cluster](../new-eks-cluster) example instead.
+Use this example when your EKS cluster is already provisioned and managed separately (e.g., by a platform or infrastructure team). If you want this module to also create the EKS cluster and node group, use the [new-eks-cluster](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.3.0/examples/new-eks-cluster) example instead.
 
 ## Differences from New EKS Cluster
 

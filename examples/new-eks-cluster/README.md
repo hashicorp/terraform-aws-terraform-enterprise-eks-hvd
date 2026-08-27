@@ -1,14 +1,14 @@
 # Example: New EKS Cluster
 
-This directory contains a ready-made Terraform configuration and an [example terraform.tfvars file](./terraform.tfvars.example) for deploying TFE on a **new EKS cluster and node group** provisioned by this module, along with all supporting AWS infrastructure (RDS, Redis, S3, IAM, Security Groups). A Helm overrides file is also generated for the subsequent TFE installation.
+This directory contains a ready-made Terraform configuration and an [example terraform.tfvars file](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.3.0/examples/new-eks-cluster/terraform.tfvars.example) for deploying TFE on a **new EKS cluster and node group** provisioned by this module, along with all supporting AWS infrastructure (RDS, Redis, S3, IAM, Security Groups). A Helm overrides file is also generated for the subsequent TFE installation.
 
 > 📝 Note: This module provisions the AWS infrastructure layer only. The TFE application itself is installed separately via `helm` in the post-deployment steps and is not managed by Terraform.
 
-For post-deployment steps, refer to the [Post Steps](../../README.md#post-steps) section in the root README. For a full list of input variables and outputs, refer to the [root module README](../../README.md#inputs).
+For post-deployment steps, refer to the [Post Steps](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.3.0/README.md#post-steps) section in the root README. For a full list of input variables and outputs, refer to the [root module README](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.3.0/README.md#inputs).
 
 ## Prerequisites
 
-The items below are specific to this example. Refer to the root module [Prerequisites](../../README.md#prerequisites) for the full list.
+The items below are specific to this example. Refer to the root module [Prerequisites](https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/blob/0.3.0/README.md#prerequisites) for the full list.
 
 ### AWS Region Configuration
 
