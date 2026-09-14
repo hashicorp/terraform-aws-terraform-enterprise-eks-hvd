@@ -91,10 +91,10 @@ resource "aws_launch_template" "tfe_eks_nodegroup" {
     device_name = var.eks_nodegroup_ami_id != null ? data.aws_ami.tfe_eks_nodegroup_custom[0].root_device_name : data.aws_ami.tfe_eks_nodegroup_default[0].root_device_name
 
     ebs {
-      volume_size           = 20
-      volume_type           = "gp3"
-      iops                  = 3000
-      throughput            = 125
+      volume_size           = var.eks_nodegroup_volume_size
+      volume_type           = var.eks_nodegroup_volume_type
+      iops                  = var.eks_nodegroup_volume_iops
+      throughput            = var.eks_nodegroup_volume_throughput
       delete_on_termination = true
       encrypted             = true
       kms_key_id            = var.eks_nodegroup_ebs_kms_key_arn

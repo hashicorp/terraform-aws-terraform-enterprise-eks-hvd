@@ -381,6 +381,35 @@ variable "eks_nodegroup_user_data" {
   default     = null
 }
 
+variable "eks_nodegroup_volume_size" {
+  type        = number
+  description = "Size in GiB of root EBS volume for each EKS node group instance."
+  default     = 20
+}
+
+variable "eks_nodegroup_volume_type" {
+  type        = string
+  description = "Type of root EBS volume for each EKS node group instance. Only `gp3` is supported because the launch template always sets `iops` and `throughput`."
+  default     = "gp3"
+
+  validation {
+    condition     = var.eks_nodegroup_volume_type == "gp3"
+    error_message = "Value must be `gp3`."
+  }
+}
+
+variable "eks_nodegroup_volume_iops" {
+  type        = number
+  description = "IOPS of root EBS volume for each EKS node group instance."
+  default     = 3000
+}
+
+variable "eks_nodegroup_volume_throughput" {
+  type        = number
+  description = "Throughput in MiB/s of root EBS volume for each EKS node group instance."
+  default     = 125
+}
+
 #------------------------------------------------------------------------------
 # RDS Aurora PostgreSQL (database)
 #------------------------------------------------------------------------------

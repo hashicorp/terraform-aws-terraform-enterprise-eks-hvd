@@ -283,3 +283,46 @@ run "pod_identity_with_existing_cluster" {
     error_message = "Pod Identity addon not created on existing cluster when expected."
   }
 }
+
+run "nodegroup_volume_settings_apply_to_launch_template" {
+  command = plan
+
+  variables {
+    eks_nodegroup_volume_size       = 100
+    eks_nodegroup_volume_type       = "gp3"
+    eks_nodegroup_volume_iops       = 6000
+    eks_nodegroup_volume_throughput = 250
+  }
+
+  assert {
+    condition     = aws_launch_template.tfe_eks_nodegroup[0].block_device_mappings[0].ebs[0].volume_size == 100
+    error_message = "Launch template volume_size does not match eks_nodegroup_volume_size."
+  }
+
+  assert {
+    condition     = aws_launch_template.tfe_eks_nodegroup[0].block_device_mappings[0].ebs[0].volume_type == "gp3"
+    error_message = "Launch template volume_type does not match eks_nodegroup_volume_type."
+  }
+
+  assert {
+    condition     = aws_launch_template.tfe_eks_nodegroup[0].block_device_mappings[0].ebs[0].iops == 6000
+    error_message = "Launch template iops does not match eks_nodegroup_volume_iops."
+  }
+
+  assert {
+    condition     = aws_launch_template.tfe_eks_nodegroup[0].block_device_mappings[0].ebs[0].throughput == 250
+    error_message = "Launch template throughput does not match eks_nodegroup_volume_throughput."
+  }
+}
+
+run "nodegroup_volume_type_must_be_gp3" {
+  command = plan
+
+  variables {
+    eks_nodegroup_volume_type = "gp2"
+  }
+
+  expect_failures = [
+    var.eks_nodegroup_volume_type
+  ]
+}
