@@ -183,3 +183,45 @@ s3_kms_key_arn                = "<s3-kms-key-arn>"
 redis_kms_key_arn             = "<redis-kms-key-arn>"
 eks_nodegroup_ebs_kms_key_arn = "<ebs-kms-key-arn>"
 ```
+
+## Database encryption in transit
+
+Encryption in transit between TFE and the RDS Aurora PostgreSQL cluster is enforced at two levels:
+
+| Level | Setting | Default | Purpose |
+|---|---|---|---|
+| Client (TFE) | `tfe_database_parameters` | `sslmode=require` | TFE connects to PostgreSQL over TLS. Rendered into `TFE_DATABASE_PARAMETERS` in the Helm overrides. |
+| Server (Aurora) | `rds_force_ssl` | `true` | Sets the `rds.force_ssl` cluster parameter to `1`. Aurora rejects any connection that does not use SSL/TLS. |
+
+Aurora PostgreSQL 16 and earlier default `rds.force_ssl` to `0` (off); version 17 and later default to `1` (on). The module sets the value explicitly so the behaviour is the same regardless of engine version.
+
+```hcl
+rds_force_ssl           = true
+tfe_database_parameters = "sslmode=require"
+```
+
+### Considerations
+
+- **Other clients:** any other client of the cluster (bastion hosts, `psql`, migration or admin tooling) must connect with SSL (for example `sslmode=require`). Non-SSL connections are rejected with `no pg_hba.conf entry for host ..., SSL off`.
+- **Existing deployments:** `rds.force_ssl` is a dynamic parameter and the module applies it with `apply_method = "immediate"`. Review the plan and, as a precaution, confirm no non-TLS clients depend on the cluster before applying.
+- **Opting out:** set `rds_force_ssl = false` to keep the previous behaviour (not recommended).
+- **Certificate validation:** `sslmode=require` encrypts traffic but does not verify the server certificate. Validating it (`verify-full`) requires the RDS CA bundle to be available to the TFE pods and is not configured by this module.
+
+## EKS Kubernetes support policy
+
+When the module creates the EKS cluster (`create_eks_cluster = true`), it sets the cluster `upgrade_policy.support_type` explicitly with `eks_cluster_support_type`.
+
+| Value | Behaviour |
+|---|---|
+| `STANDARD` (default) | The cluster is automatically upgraded to the next Kubernetes version at the end of standard support. |
+| `EXTENDED` | The cluster stays on its version and enters paid extended support at the end of standard support. |
+
+```hcl
+eks_cluster_support_type = "STANDARD"
+```
+
+### Considerations
+
+- **Organisation policies:** if your organisation blocks new clusters that use `EXTENDED` support (for example with a service control policy), leave the default at `STANDARD`. When the argument was not set, AWS applied `EXTENDED` to new clusters.
+- **Existing clusters:** changing the value updates the cluster in place, but AWS may reject a change to `EXTENDED` if your organisation blocks it. Review the plan before applying. This variable has no effect when `create_eks_cluster = false`; set the support policy on a cluster you manage outside this module directly.
+- **Automatic upgrades:** `STANDARD` clusters are upgraded by AWS at the end of standard support. Plan for add-on, node group and workload compatibility, and consider managing the cluster `version` yourself ahead of that date.

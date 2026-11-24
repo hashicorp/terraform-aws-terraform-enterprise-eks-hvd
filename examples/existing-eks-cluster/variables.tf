@@ -330,6 +330,17 @@ variable "eks_cluster_service_ipv4_cidr" {
   }
 }
 
+variable "eks_cluster_support_type" {
+  type        = string
+  description = "Kubernetes version support policy for the EKS cluster (`upgrade_policy.support_type`). `STANDARD` clusters are automatically upgraded at the end of standard support; `EXTENDED` clusters enter paid extended support instead. Only applies when `create_eks_cluster` is `true`."
+  default     = "STANDARD"
+
+  validation {
+    condition     = contains(["STANDARD", "EXTENDED"], var.eks_cluster_support_type)
+    error_message = "Supported values are `STANDARD` or `EXTENDED`."
+  }
+}
+
 variable "eks_nodegroup_name" {
   type        = string
   description = "Name of EKS node group."
@@ -592,6 +603,12 @@ variable "rds_parameter_group_family" {
   type        = string
   description = "Family of Aurora PostgreSQL database parameter group."
   default     = "aurora-postgresql16"
+}
+
+variable "rds_force_ssl" {
+  type        = bool
+  description = "Boolean to require SSL/TLS for all connections to the RDS Aurora cluster by setting the `rds.force_ssl` cluster parameter. Clients connecting without SSL are rejected when `true`."
+  default     = true
 }
 
 variable "rds_aurora_replica_count" {
