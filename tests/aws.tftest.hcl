@@ -305,3 +305,43 @@ run "rds_force_ssl_can_be_disabled" {
     error_message = "rds.force_ssl should be 0 when rds_force_ssl is false."
   }
 }
+
+run "eks_cluster_support_type_defaults_to_standard" {
+  command = plan
+
+  variables {
+    create_eks_cluster = true
+  }
+
+  assert {
+    condition     = aws_eks_cluster.tfe[0].upgrade_policy[0].support_type == "STANDARD"
+    error_message = "EKS cluster upgrade_policy.support_type should default to STANDARD."
+  }
+}
+
+run "eks_cluster_support_type_can_be_extended" {
+  command = plan
+
+  variables {
+    create_eks_cluster       = true
+    eks_cluster_support_type = "EXTENDED"
+  }
+
+  assert {
+    condition     = aws_eks_cluster.tfe[0].upgrade_policy[0].support_type == "EXTENDED"
+    error_message = "EKS cluster upgrade_policy.support_type should be EXTENDED when requested."
+  }
+}
+
+run "eks_cluster_support_type_rejects_invalid_value" {
+  command = plan
+
+  variables {
+    create_eks_cluster       = true
+    eks_cluster_support_type = "BASIC"
+  }
+
+  expect_failures = [
+    var.eks_cluster_support_type,
+  ]
+}

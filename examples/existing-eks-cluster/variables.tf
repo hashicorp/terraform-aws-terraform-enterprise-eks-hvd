@@ -330,6 +330,17 @@ variable "eks_cluster_service_ipv4_cidr" {
   }
 }
 
+variable "eks_cluster_support_type" {
+  type        = string
+  description = "Kubernetes version support policy for the EKS cluster (`upgrade_policy.support_type`). `STANDARD` clusters are automatically upgraded at the end of standard support; `EXTENDED` clusters enter paid extended support instead. Only applies when `create_eks_cluster` is `true`."
+  default     = "STANDARD"
+
+  validation {
+    condition     = contains(["STANDARD", "EXTENDED"], var.eks_cluster_support_type)
+    error_message = "Supported values are `STANDARD` or `EXTENDED`."
+  }
+}
+
 variable "eks_nodegroup_name" {
   type        = string
   description = "Name of EKS node group."

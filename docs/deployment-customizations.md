@@ -197,3 +197,22 @@ tfe_database_parameters = "sslmode=require"
 - **Existing deployments:** `rds.force_ssl` is a dynamic parameter and the module applies it with `apply_method = "immediate"`. Review the plan and, as a precaution, confirm no non-TLS clients depend on the cluster before applying.
 - **Opting out:** set `rds_force_ssl = false` to keep the previous behaviour (not recommended).
 - **Certificate validation:** `sslmode=require` encrypts traffic but does not verify the server certificate. Validating it (`verify-full`) requires the RDS CA bundle to be available to the TFE pods and is not configured by this module.
+
+## EKS Kubernetes support policy
+
+When the module creates the EKS cluster (`create_eks_cluster = true`), it sets the cluster `upgrade_policy.support_type` explicitly with `eks_cluster_support_type`.
+
+| Value | Behaviour |
+|---|---|
+| `STANDARD` (default) | The cluster is automatically upgraded to the next Kubernetes version at the end of standard support. |
+| `EXTENDED` | The cluster stays on its version and enters paid extended support at the end of standard support. |
+
+```hcl
+eks_cluster_support_type = "STANDARD"
+```
+
+### Considerations
+
+- **Organisation policies:** if your organisation blocks new clusters that use `EXTENDED` support (for example with a service control policy), leave the default at `STANDARD`. When the argument was not set, AWS applied `EXTENDED` to new clusters.
+- **Existing clusters:** changing the value updates the cluster in place, but AWS may reject a change to `EXTENDED` if your organisation blocks it. Review the plan before applying. This variable has no effect when `create_eks_cluster = false`; set the support policy on a cluster you manage outside this module directly.
+- **Automatic upgrades:** `STANDARD` clusters are upgraded by AWS at the end of standard support. Plan for add-on, node group and workload compatibility, and consider managing the cluster `version` yourself ahead of that date.

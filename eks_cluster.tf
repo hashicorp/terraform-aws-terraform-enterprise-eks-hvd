@@ -29,6 +29,10 @@ resource "aws_eks_cluster" "tfe" {
     service_ipv6_cidr = null
   }
 
+  upgrade_policy {
+    support_type = var.eks_cluster_support_type
+  }
+
   tags = merge(
     { "Name" = "${var.friendly_name_prefix}-${var.eks_cluster_name}" },
     var.common_tags
