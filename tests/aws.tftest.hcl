@@ -283,3 +283,25 @@ run "pod_identity_with_existing_cluster" {
     error_message = "Pod Identity addon not created on existing cluster when expected."
   }
 }
+
+run "rds_force_ssl_enabled_by_default" {
+  command = plan
+
+  assert {
+    condition     = one([for p in aws_rds_cluster_parameter_group.tfe.parameter : p.value if p.name == "rds.force_ssl"]) == "1"
+    error_message = "rds.force_ssl should default to 1 on the RDS cluster parameter group."
+  }
+}
+
+run "rds_force_ssl_can_be_disabled" {
+  command = plan
+
+  variables {
+    rds_force_ssl = false
+  }
+
+  assert {
+    condition     = one([for p in aws_rds_cluster_parameter_group.tfe.parameter : p.value if p.name == "rds.force_ssl"]) == "0"
+    error_message = "rds.force_ssl should be 0 when rds_force_ssl is false."
+  }
+}

@@ -37,6 +37,7 @@ module "tfe" {
   # --- Database --- #
   tfe_database_password_secret_arn = var.tfe_database_password_secret_arn
   rds_skip_final_snapshot          = var.rds_skip_final_snapshot
+  rds_force_ssl                    = var.rds_force_ssl
   sg_allow_ingress_to_rds          = var.sg_allow_ingress_to_rds
 
   # --- Redis --- #
