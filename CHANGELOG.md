@@ -1,3 +1,14 @@
+## v0.3.1
+
+## What's Changed
+* Release 0.3.0 by @abuxton in https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/pull/65
+* Expose the EKS node group root EBS volume settings as module inputs by @benemon in https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/pull/66
+
+## New Contributors
+* @benemon made their first contribution in https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/pull/66
+
+**Full Changelog**: https://github.com/hashicorp/terraform-aws-terraform-enterprise-eks-hvd/compare/0.3.0...0.3.1
+
 ## v0.3.0
 
 ## What's Changed
