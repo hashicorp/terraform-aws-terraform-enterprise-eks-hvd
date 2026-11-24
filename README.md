@@ -96,16 +96,20 @@ One of the following logging destinations:
         │   ├── main.tf
         │   ├── outputs.tf
         │   ├── terraform.tfvars
-        │   └── variables.tf
+        │   ├── variables.tf
+        │   └── variables_provider.tf
         └── sandbox
             ├── backend.tf
             ├── main.tf
             ├── outputs.tf
             ├── terraform.tfvars
-            └── variables.tf
+            ├── variables.tf
+            └── variables_provider.tf
     ```
 
     >📝 Note: In this example, the user will have two separate TFE deployments; one for their `sandbox` environment, and one for their `production` environment. This is recommended, but not required.
+
+    >📝 Note: `variables_provider.tf` defines provider configuration variables (not module variables) and must be copied from the examples directory.
 
 1. (Optional) Uncomment and update the [S3 remote state backend](https://developer.hashicorp.com/terraform/language/settings/backends/s3) configuration provided in the `backend.tf` file with your own custom values. While this step is highly recommended, it is technically not required to use a remote backend config for your TFE deployment (if you are in a sandbox environment, for example).
 
@@ -153,7 +157,7 @@ The next phase of the deployment is the application layer (referred to as the **
     --set clusterName=<eks-cluster-name> \
     --set serviceAccount.create=true \
     --set serviceAccount.name=aws-load-balancer-controller \
-    --set serviceAccount.annotations."eks\.amazonaws\.com/role-arn"=<aws_lb_controller_irsa_role_arn> \
+    --set serviceAccount.annotations."eks\.amazonaws\.com/role-arn"=$(terraform output -raw aws_lb_controller_irsa_role_arn) \
     --set region=<aws-region> \
     --set vpcId=<vpc-id>
 
@@ -433,6 +437,10 @@ Please note that there is no official Service Level Agreement (SLA) for support 
 | <a name="input_eks_nodegroup_name"></a> [eks\_nodegroup\_name](#input\_eks\_nodegroup\_name) | Name of EKS node group. | `string` | `"tfe-eks-nodegroup"` | no |
 | <a name="input_eks_nodegroup_scaling_config"></a> [eks\_nodegroup\_scaling\_config](#input\_eks\_nodegroup\_scaling\_config) | Scaling configuration for EKS node group. | `map(number)` | <pre>{<br/>  "desired_size": 3,<br/>  "max_size": 3,<br/>  "min_size": 2<br/>}</pre> | no |
 | <a name="input_eks_nodegroup_user_data"></a> [eks\_nodegroup\_user\_data](#input\_eks\_nodegroup\_user\_data) | Base64-encoded user data to apply to the EKS node group launch template (e.g. via `base64encode()`). When `null`, no `user_data` is applied to the launch template and the AMI's default bootstrap behavior is used. | `string` | `null` | no |
+| <a name="input_eks_nodegroup_volume_iops"></a> [eks\_nodegroup\_volume\_iops](#input\_eks\_nodegroup\_volume\_iops) | IOPS of root EBS volume for each EKS node group instance. | `number` | `3000` | no |
+| <a name="input_eks_nodegroup_volume_size"></a> [eks\_nodegroup\_volume\_size](#input\_eks\_nodegroup\_volume\_size) | Size in GiB of root EBS volume for each EKS node group instance. | `number` | `20` | no |
+| <a name="input_eks_nodegroup_volume_throughput"></a> [eks\_nodegroup\_volume\_throughput](#input\_eks\_nodegroup\_volume\_throughput) | Throughput in MiB/s of root EBS volume for each EKS node group instance. | `number` | `125` | no |
+| <a name="input_eks_nodegroup_volume_type"></a> [eks\_nodegroup\_volume\_type](#input\_eks\_nodegroup\_volume\_type) | Type of root EBS volume for each EKS node group instance. Only `gp3` is supported because the launch template always sets `iops` and `throughput`. | `string` | `"gp3"` | no |
 | <a name="input_eks_oidc_provider_arn"></a> [eks\_oidc\_provider\_arn](#input\_eks\_oidc\_provider\_arn) | ARN of existing OIDC provider for EKS cluster. Required when `create_eks_oidc_provider` is `false`. | `string` | `null` | no |
 | <a name="input_eks_oidc_provider_url"></a> [eks\_oidc\_provider\_url](#input\_eks\_oidc\_provider\_url) | URL of existing OIDC provider for EKS cluster. Required when `create_eks_oidc_provider` is `false`. | `string` | `null` | no |
 | <a name="input_eks_pod_identity_addon_version"></a> [eks\_pod\_identity\_addon\_version](#input\_eks\_pod\_identity\_addon\_version) | The version of the EKS Pod Identity Agent to use. Defaults to latest. | `string` | `null` | no |
@@ -506,6 +514,8 @@ Please note that there is no official Service Level Agreement (SLA) for support 
 | <a name="output_elasticache_replication_group_arn"></a> [elasticache\_replication\_group\_arn](#output\_elasticache\_replication\_group\_arn) | ARN of ElastiCache Replication Group (Redis) cluster. |
 | <a name="output_elasticache_replication_group_id"></a> [elasticache\_replication\_group\_id](#output\_elasticache\_replication\_group\_id) | ID of ElastiCache Replication Group (Redis) cluster. |
 | <a name="output_elasticache_replication_group_primary_endpoint_address"></a> [elasticache\_replication\_group\_primary\_endpoint\_address](#output\_elasticache\_replication\_group\_primary\_endpoint\_address) | Primary endpoint address of ElastiCache Replication Group (Redis) cluster. |
+| <a name="output_oidc_provider"></a> [oidc\_provider](#output\_oidc\_provider) | URL of the OIDC provider for the EKS cluster. Required for configuring IRSA (IAM Roles for Service Accounts). |
+| <a name="output_oidc_provider_arn"></a> [oidc\_provider\_arn](#output\_oidc\_provider\_arn) | ARN of the OIDC provider for the EKS cluster. Required for configuring IRSA (IAM Roles for Service Accounts). |
 | <a name="output_rds_aurora_cluster_arn"></a> [rds\_aurora\_cluster\_arn](#output\_rds\_aurora\_cluster\_arn) | ARN of RDS Aurora database cluster. |
 | <a name="output_rds_aurora_cluster_endpoint"></a> [rds\_aurora\_cluster\_endpoint](#output\_rds\_aurora\_cluster\_endpoint) | RDS Aurora database cluster endpoint. |
 | <a name="output_rds_aurora_cluster_members"></a> [rds\_aurora\_cluster\_members](#output\_rds\_aurora\_cluster\_members) | List of instances that are part of this RDS Aurora database cluster. |

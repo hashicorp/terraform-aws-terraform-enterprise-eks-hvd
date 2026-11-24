@@ -70,6 +70,15 @@ eks_nodegroup_ami_type = "CUSTOM"
 eks_nodegroup_ami_id   = "<my-custom-ami-id>"
 ```
 
+To change the root EBS volume attached to each worker node (defaults shown):
+
+```hcl
+eks_nodegroup_volume_size       = 20    # GiB
+eks_nodegroup_volume_type       = "gp3" # only `gp3` is supported
+eks_nodegroup_volume_iops       = 3000
+eks_nodegroup_volume_throughput = 125   # MiB/s
+```
+
 >📝 Note: The launch template always enforces IMDSv2 (`http_tokens = "required"`) and encrypts the root EBS volume by default. To encrypt the EBS volume with a customer-managed KMS key instead of the AWS-managed key, see the [KMS](#kms) section below.
 
 To run custom bootstrap logic on worker nodes at launch (_e.g._ additional `containerd`/`kubelet` configuration, custom `nodeadm`/bootstrap scripts, host hardening), set `eks_nodegroup_user_data` to your base64-encoded user data:

@@ -505,7 +505,7 @@ resource "aws_iam_policy" "aws_load_balancer_controller_policy" {
   policy      = data.aws_iam_policy_document.aws_load_balancer_controller_policy[0].json
 }
 
-# Source: https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.13.0/docs/install/iam_policy.json
+# Source: https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v3.5.0/docs/install/iam_policy.json
 data "aws_iam_policy_document" "aws_load_balancer_controller_policy" {
   count = (var.create_aws_lb_controller_irsa || var.create_aws_lb_controller_pod_identity) ? 1 : 0
 
@@ -532,11 +532,14 @@ data "aws_iam_policy_document" "aws_load_balancer_controller_policy" {
       "ec2:DescribeVpcs",
       "ec2:DescribeVpcPeeringConnections",
       "ec2:DescribeSubnets",
+      "ec2:DescribeRouteTables",
       "ec2:DescribeSecurityGroups",
       "ec2:DescribeInstances",
       "ec2:DescribeNetworkInterfaces",
       "ec2:DescribeTags",
+      "ec2:DescribeIpamPools",
       "ec2:GetCoipPoolUsage",
+      "ec2:GetSecurityGroupsForVpc",
       "ec2:DescribeCoipPools",
       "elasticloadbalancing:DescribeLoadBalancers",
       "elasticloadbalancing:DescribeLoadBalancerAttributes",
@@ -549,7 +552,8 @@ data "aws_iam_policy_document" "aws_load_balancer_controller_policy" {
       "elasticloadbalancing:DescribeTargetHealth",
       "elasticloadbalancing:DescribeTags",
       "elasticloadbalancing:DescribeTrustStores",
-      "elasticloadbalancing:DescribeListenerAttributes"
+      "elasticloadbalancing:DescribeListenerAttributes",
+      "elasticloadbalancing:DescribeCapacityReservation"
     ]
     resources = ["*"]
   }
@@ -765,7 +769,10 @@ data "aws_iam_policy_document" "aws_load_balancer_controller_policy" {
     effect = "Allow"
     actions = [
       "elasticloadbalancing:SetWebAcl",
+      "elasticloadbalancing:SetRulePriorities",
       "elasticloadbalancing:ModifyListener",
+      "elasticloadbalancing:ModifyCapacityReservation",
+      "elasticloadbalancing:ModifyIpPools",
       "elasticloadbalancing:AddListenerCertificates",
       "elasticloadbalancing:RemoveListenerCertificates",
       "elasticloadbalancing:ModifyRule"
